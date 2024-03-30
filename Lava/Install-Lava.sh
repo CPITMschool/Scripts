@@ -12,7 +12,7 @@ function install() {
   clear
   source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
-  printGreen "Введіть ім'я для вашої ноди(Наприклад:Oliver1):"
+  printGreen "Введіть ім'я для вашої ноди(Наприклад:Oliver111111):"
   read -r NODE_MONIKER
 
   CHAIN_ID="lava-testnet-2"
