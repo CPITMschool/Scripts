@@ -3,7 +3,7 @@
 function printDelimiter {
   echo "==========================================="
 }
-1 
+
 function printGreen {
   echo -e "\e[1m\e[32m${1}\e[0m"
 }
@@ -12,7 +12,7 @@ function install() {
   clear
   source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
-  printGreen "Введіть ім'я для вашої ноди(Наприклад:Oliver):"
+  printGreen "Введіть ім'я для вашої ноди(Наприклад:Oliver1):"
   read -r NODE_MONIKER
 
   CHAIN_ID="lava-testnet-2"
