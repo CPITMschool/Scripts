@@ -3,7 +3,7 @@
 function printDelimiter {
   echo "==========================================="
 }
-
+1 
 function printGreen {
   echo -e "\e[1m\e[32m${1}\e[0m"
 }
