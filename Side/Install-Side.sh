@@ -16,7 +16,7 @@ function install() {
   echo 'export MONIKER='$MONIKER
   PORT="${PORT:-22}"
   echo "export PORT=$PORT"
-  echo "export SIDE_CHAIN_ID="side-testnet-2"" >> $HOME/.bash_profile
+  echo "export SIDE_CHAIN_ID="side-testnet-3"" >> $HOME/.bash_profile
   echo "export SIDE_PORT="$PORT"" >> $HOME/.bash_profile
   source $HOME/.bash_profile
   
@@ -31,13 +31,13 @@ function install() {
   rm -rf side
   git clone https://github.com/sideprotocol/side.git
   cd side
-  git checkout v0.6.0
+  git checkout v0.7.0-rc2
   make install
 
   sided config node tcp://localhost:${SIDE_PORT}657
   sided config keyring-backend os
-  sided config chain-id side-testnet-2
-  sided init "$MONIKER" --chain-id side-testnet-2
+  sided config chain-id side-testnet-3
+  sided init "$MONIKER" --chain-id side-testnet-3
 
   wget -O $HOME/.side/config/genesis.json https://testnet-files.itrocket.net/side/genesis.json
   wget -O $HOME/.side/config/addrbook.json https://testnet-files.itrocket.net/side/addrbook.json
