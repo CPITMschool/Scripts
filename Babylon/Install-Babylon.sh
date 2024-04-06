@@ -27,13 +27,13 @@ function install() {
   rm -rf babylon
   git clone https://github.com/babylonchain/babylon
   cd babylon
-  git checkout v0.7.2
+  git checkout v0.8.4
 
   make install
 
-  babylond config chain-id bbn-test-2
+  babylond config chain-id bbn-test-3
   babylond config keyring-backend test
-  babylond init $NODE_MONIKER --chain-id bbn-test-2
+  babylond init $NODE_MONIKER --chain-id bbn-test-3
 
   curl -L https://snapshots-testnet.nodejumper.io/babylon-testnet/genesis.json > $HOME/.babylond/config/genesis.json
   curl -L https://snapshots-testnet.nodejumper.io/babylon-testnet/addrbook.json > $HOME/.babylond/config/addrbook.json
