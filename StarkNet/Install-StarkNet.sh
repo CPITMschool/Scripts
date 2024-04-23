@@ -37,7 +37,7 @@ rm -rf pathfinder
 git clone https://github.com/eqlabs/pathfinder.git
 cd pathfinder
 git fetch
-git checkout v0.10.3
+git checkout v0.12.0
 #cd $HOME/pathfinder/py
 #python3.10 -m venv .venv
 #source .venv/bin/activate
