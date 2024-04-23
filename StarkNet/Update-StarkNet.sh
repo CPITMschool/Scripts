@@ -23,7 +23,7 @@ rustup update stable --force
 cd ~/pathfinder
 git pull
 git fetch --all
-git checkout v0.10.3
+git checkout v0.12.0
 cargo build --release --bin pathfinder
 sudo mv ~/pathfinder/target/release/pathfinder /usr/local/bin/
 mkdir -p $HOME/.starknet/db
