@@ -12,7 +12,6 @@ function install() {
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
-logo
 echo -e "\e[30;47m Введіть ім'я moniker(Наприклад: Asapov):\e[0m"
 echo -en ">>> "
 read -r NODE_MONIKER
