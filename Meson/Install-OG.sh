@@ -12,7 +12,7 @@ function install() {
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
-echo -e "\e[30;47m Введіть ім'я moniker(Наприклад: Asapov):\e[0m"
+echo -e "\e[30;47m Введіть ім'я moniker(Наприклад: Oliver):\e[0m"
 echo -en ">>> "
 read -r NODE_MONIKER
 
@@ -59,6 +59,10 @@ sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.0gchain/config/app.to
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.0gchain/config/app.toml
 sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.0gchain/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.0gchain/config/app.toml
+
+
+### Downoload snapshot
+curl -L http://snapshots.liveraven.net/snapshots/testnet/zero-gravity/zgtendermint_16600-1_latest.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.0gchain
 
 ### Create service
 sudo tee /etc/systemd/system/0gchaind.service > /dev/null << EOF
