@@ -88,3 +88,6 @@ printGreen "Переглянути журнал логів:         sudo journal
 printGreen "Переглянути статус синхронізації: 0gchaind status | jq | grep \"catching_up\""
 source $HOME/.bash_profile
 printDelimiter
+}
+
+install
