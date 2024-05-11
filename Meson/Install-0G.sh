@@ -11,11 +11,13 @@ function printGreen {
 function install() {
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
-source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
 
+logo
 echo -e "\e[30;47m Введіть ім'я moniker(Наприклад: Asapov):\e[0m"
 echo -en ">>> "
 read -r NODE_MONIKER
+
+source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
 
 ### Install Dependencies
 source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
