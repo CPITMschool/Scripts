@@ -11,6 +11,8 @@ function printGreen {
   echo -e "\e[1m\e[32m${1}\e[0m"
 }
 
+function install() {
+
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
@@ -100,3 +102,4 @@ printGreen "Переглянути статус синхронізації: 0gch
 source $HOME/.bash_profile
 printDelimiter
 }
+install
