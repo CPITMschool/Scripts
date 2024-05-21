@@ -97,8 +97,8 @@ sudo systemctl start initiad.service
 
 ### Useful commands
 printDelimiter
-printGreen "Переглянути журнал логів:         sudo journalctl -u 0gchaind -f -o cat"
-printGreen "Переглянути статус синхронізації: 0gchaind status | jq | grep \"catching_up\""
+printGreen "Переглянути журнал логів:         sudo journalctl -u initiad -f -o cat"
+printGreen "Переглянути статус синхронізації: initiad status | jq | grep \"catching_up\""
 source $HOME/.bash_profile
 printDelimiter
 }
