@@ -1,4 +1,6 @@
- printDelimiter {
+#!/bin/bash
+
+function printDelimiter {
   echo "==========================================="
 }
 
@@ -9,8 +11,7 @@ function printGreen {
 function update() {
   clear
   source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
-  printGreen "Оновлюємо Initia"
-  echo ""
+  
   sudo systemctl stop initiad
 
   cd && rm -rf initia
@@ -21,15 +22,14 @@ function update() {
   make install
 
   sudo systemctl restart initiad
-  sudo journalctl -u initiad -f --no-hostname -o cat
+  sudo journalctl -u initiad -f -o cat
   printGreen "Версія вашої ноди:"
   initiad version
-  echo ""
   
+  echo ""
   printDelimiter
   printGreen "Переглянути журнал логів:         sudo journalctl -u initiad -f -o cat"
   printGreen "Переглянути статус синхронізації: initiad status 2>&1 | jq .SyncInfo"
-  printGreen "В журналі логів спочатку ви можете побачити помилку Connection is closed. Але за 5-10 секунд нода розпочне синхронізацію"
   printDelimiter
 }
 
