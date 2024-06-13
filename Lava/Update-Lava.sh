@@ -16,7 +16,7 @@ function install() {
   sudo systemctl stop lavad
 
   cd $HOME
-  wget -O lavad https://github.com/lavanet/lava/releases/download/v2.0.0/lavad-v2.0.0-linux-amd64
+  wget -O lavad https://github.com/lavanet/lava/releases/download/v2.1.1/lavad-v2.1.1-linux-amd64
   chmod +x $HOME/lavad
   sudo mv $HOME/lavad $(which lavad)
   sudo systemctl start lavad
