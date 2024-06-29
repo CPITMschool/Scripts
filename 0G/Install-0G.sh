@@ -16,8 +16,6 @@ echo -e "\e[30;47m Введіть ім'я moniker(Наприклад: Oliver):\e
 echo -en ">>> "
 read -r NODE_MONIKER
 
-source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
-
 ### Install Dependencies
 source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
 
