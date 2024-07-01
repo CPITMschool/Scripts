@@ -23,11 +23,13 @@ source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/depen
 echo ""
 printColor blue "[4/6] Building binaries"
 
-cd $HOME
-rm -rf $HOME/.0gchain
-git clone -b v0.2.3 https://github.com/0glabs/0g-chain.git
-./0g-chain/networks/testnet/install.sh
-source .bash_profile
+cd && rm -rf 0g-chain
+git clone https://github.com/0glabs/0g-chain
+cd 0g-chain
+git checkout v0.2.3
+
+# Build binary
+make install
 
 0gchaind config chain-id zgtendermint_16600-2
 0gchaind config keyring-backend test
