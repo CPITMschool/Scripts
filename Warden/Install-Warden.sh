@@ -17,7 +17,6 @@ echo -en ">>> "
 read -r NODE_MONIKER
 
 ### Install Dependencies
-source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
 
 ### Building binaries
 echo ""
