@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Перевірка наявності speedtest-cli, встановлення та виконання тесту швидкості інтернету
+if ! command -v speedtest-cli &> /dev/null; then
+    sudo apt-get update
+    sudo apt-get install -y speedtest-cli
+fi
+
+speed_test=$(speedtest-cli --simple | awk '/Download/ {print "Download: "$2" "$3} /Upload/ {print "Upload: "$2" "$3}')
+
+# Перевірка швидкості запису на диск
+disk_status=$(dd if=/dev/zero of=testfile bs=1G count=1 oflag=dsync 2>&1 | grep 'copied' | awk '{print $8, $9}')
+
+# Видалення тестового файлу
+rm -f testfile
+
 # Перевірка версії Ubuntu
 ubuntu_version=$(lsb_release -d | awk -F"\t" '{print $2}')
 
@@ -72,5 +86,7 @@ echo -e "${GREEN}Архітектура процесора: ${RED}$cpu_type${NC}
 echo -e "${GREEN}Мова програмування GO: ${RED}$go_status${NC}"
 echo -e "${GREEN}Утиліта screen: ${RED}$screen_status${NC}"
 echo -e "${GREEN}Docker: ${RED}$docker_status${NC}"
+echo -e "${GREEN}Швидкість інтернету: ${RED}$speed_test${NC}"
+echo -e "${GREEN}Швидкість запису диску: ${RED}$disk_status${NC}"
 echo -e "${GREEN}Зайняті порти:${NC}"
 echo -e "${occupied_ports}"
