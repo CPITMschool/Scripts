@@ -8,11 +8,16 @@ fi
 
 speed_test=$(speedtest-cli --simple | awk '/Download/ {print "Download: "$2" "$3} /Upload/ {print "Upload: "$2" "$3}')
 
-# Перевірка швидкості запису на диск
-disk_status=$(dd if=/dev/zero of=testfile bs=1G count=1 oflag=dsync 2>&1 | grep 'copied' | awk '{print $8, $9}')
+# Перевірка швидкості запису на диск з використанням dd
+start_time=$(date +%s.%N)
+dd if=/dev/zero of=testfile bs=4k count=100000 oflag=dsync 2>&1 | grep 'copied' > dd_output.txt
+end_time=$(date +%s.%N)
+disk_time=$(echo "$end_time - $start_time" | bc)
+disk_speed=$(grep 'copied' dd_output.txt | awk '{print $8, $9}')
+disk_status="${disk_time}s, ${disk_speed}"
 
 # Видалення тестового файлу
-rm -f testfile
+rm -f testfile dd_output.txt
 
 # Перевірка версії Ubuntu
 ubuntu_version=$(lsb_release -d | awk -F"\t" '{print $2}')
