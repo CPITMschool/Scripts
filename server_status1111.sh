@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo ""
-echo "Результат буде відображено приблизно за 1 хвилину"
 # Перевірка наявності speedtest-cli, встановлення та виконання тесту швидкості інтернету
 if ! command -v speedtest-cli &> /dev/null; then
     sudo apt-get update
@@ -12,8 +10,10 @@ speed_test=$(speedtest-cli --simple | awk '/Download/ {print "Download: "$2" "$3
 
 # Перевірка швидкості запису на диск
 dd_output=$(dd if=/dev/zero of=testfile bs=1G count=1 oflag=dsync 2>&1)
-disk_speed=$(echo "$dd_output" | grep 'copied' | awk '{print $8, $9}')
-disk_status="${disk_speed} MB/s"
+disk_time=$(echo "$dd_output" | grep 'copied' | awk '{print $1}')
+disk_speed=$(echo "$dd_output" | grep 'copied' | awk '{print $8}')
+disk_speed_unit=$(echo "$dd_output" | grep 'copied' | awk '{print $9}')
+disk_status="${disk_time}s, ${disk_speed} ${disk_speed_unit}"
 
 # Видалення тестового файлу перевірки запису диску
 rm -f testfile
