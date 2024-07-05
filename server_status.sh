@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo""
-echo "Ви побачите результат перевірки приблизно за 1хв"
-
 # Перевірка наявності speedtest-cli, встановлення та виконання тесту швидкості інтернету
 if ! command -v speedtest-cli &> /dev/null; then
     sudo apt-get update
@@ -19,7 +16,6 @@ disk_status="${disk_speed} ${disk_speed_unit}"
 
 # Видалення тестового файлу перевірки запису диску
 rm -f testfile
-
 
 # Перевірка версії Ubuntu
 ubuntu_version=$(lsb_release -d | awk -F"\t" '{print $2}')
