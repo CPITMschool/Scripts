@@ -38,6 +38,21 @@ source $HOME/.bash_profile
 
 0gchaind init "$NODE_MONIKER" --chain-id zgtendermint_16600-2
 
+##CHANGE PORTS
+sed -i.bak -e "s%:1317%:1417%g; 
+s%:8080%:8180%g;
+s%:9090%:9190%g;
+s%:9091%:9191%g;
+s%:8545%:8645%g;
+s%:8546%:8646%g;
+s%:6065%:6165%g" $HOME/.0gchain/config/app.toml	
+sed -i.bak -e "s%:26658%:27658%g;
+s%:26657%:27657%g;
+s%:6060%:6160%g;
+s%tcp://0.0.0.0:26656%tcp://0.0.0.0:27656%g;
+s%:26660%:27660%g" $HOME/.0gchain/config/config.toml
+sed -i.bak -e "s%:26657%:27657%g" $HOME/.0gchain/config/client.toml
+
 ### Download genesis and addrbook
 wget https://github.com/0glabs/0g-chain/releases/download/v0.1.0/genesis.json -O $HOME/.0gchain/config/genesis.json
 wget https://snapshots-testnet.unitynodes.com/0gchain-testnet/addrbook.json -O $HOME/.0gchain/config/addrbook.json
@@ -47,7 +62,7 @@ SEEDS="81987895a11f6689ada254c6b57932ab7ed909b6@54.241.167.190:26656,010fb4de286
 sed -i 's|^seeds *=.*|seeds = "'$SEEDS'"|; s|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.0gchain/config/config.toml
 
 ### Minimum gas price
-sed -i "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0ua0gi\"/" $HOME/.0gchain/config/app.toml
+sed -i -e 's|^minimum-gas-prices *=.*|minimum-gas-prices = "0.0025ua0gi"|' $HOME/.0gchain/config/app.toml
 
 ### Set pruning
 pruning="custom"
