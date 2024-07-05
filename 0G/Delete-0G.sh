@@ -12,7 +12,7 @@ function delete() {
   sudo systemctl stop 0gchaind
   sudo systemctl disable 0gchaind
   sudo rm -rf $HOME/.0gchain
-  sudo rm -rf $HOME/0gchain
+  sudo rm -rf $HOME/0g-chain
   sudo rm -rf /etc/systemd/system/0gchaind.service
   sudo rm -rf /usr/local/bin/0gchaind
   sudo systemctl daemon-reload
