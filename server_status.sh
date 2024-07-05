@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Оголошення змінних для кольорів
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # Без кольору
+
+echo ""
+echo -e "${GREEN}Ви побачите результат перевірки приблизно за 1 хвилину:${NC}"
+
 # Перевірка наявності speedtest-cli, встановлення та виконання тесту швидкості інтернету
 if ! command -v speedtest-cli &> /dev/null; then
     sudo apt-get update
@@ -8,13 +16,14 @@ fi
 
 speed_test=$(speedtest-cli --simple | awk '/Download/ {print "Download: "$2" "$3} /Upload/ {print "Upload: "$2" "$3}')
 
-# Перевірка швидкості запису на диск
+# Виконання dd і зберігання результату в змінну disk_speed
 dd_output=$(dd if=/dev/zero of=testfile bs=1G count=1 oflag=dsync 2>&1)
-disk_speed=$(echo "$dd_output" | grep 'copied' | awk '{print $8}')
-disk_speed_unit=$(echo "$dd_output" | grep 'copied' | awk '{print $9}')
-disk_status="${disk_speed} ${disk_speed_unit}"
+disk_speed=$(echo "$dd_output" | grep -o '[0-9.]*\s*MB/s')
 
-# Видалення тестового файлу перевірки запису диску
+# Збереження результату в змінну get_disk_speed
+get_disk_speed="$disk_speed"
+
+# Видалення тестового файлу
 rm -f testfile
 
 # Перевірка версії Ubuntu
@@ -44,6 +53,9 @@ cpu_type=$(uname -m)
 # Перегляд зайнятих портів
 occupied_ports=$(ss -tulnp | grep 'LISTEN')
 
+# Перегляд активних процесів
+active_process=$(systemctl list-units --type=service --state=running)
+
 # Перевірка наявності Go
 if go_version=$(go version 2>/dev/null); then
     go_status="встановлено ($go_version)"
@@ -71,11 +83,6 @@ if [ ! -f "$bash_profile" ]; then
     touch "$bash_profile"
 fi
 
-# Кольори
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m' # Без кольору
-
 # Виведення інформації
 echo ""
 echo -e "${GREEN}На вашому сервері доступно:${NC}"
@@ -90,6 +97,10 @@ echo -e "${GREEN}Мова програмування GO: ${RED}$go_status${NC}"
 echo -e "${GREEN}Утиліта screen: ${RED}$screen_status${NC}"
 echo -e "${GREEN}Docker: ${RED}$docker_status${NC}"
 echo -e "${GREEN}Швидкість інтернету: ${RED}$speed_test${NC}"
-echo -e "${GREEN}Швидкість запису диску: ${RED}$disk_status${NC}"
+echo -e "${GREEN}Швидкість запису диску: ${RED}$get_disk_speed${NC}"
+echo ""
 echo -e "${GREEN}Зайняті порти:${NC}"
 echo -e "${occupied_ports}"
+echo ""
+echo -e "${GREEN}Активні процеси:${NC}"
+echo -e "${active_process}"
