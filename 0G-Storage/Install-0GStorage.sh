@@ -1,5 +1,6 @@
 #!/bin/bash
 
+function install() {
 # Basic functions from URL
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/utils.sh)
 
@@ -112,3 +113,5 @@ printColor blue "Переглянути версію      >>> $HOME/0g-storage-n
 printColor blue "Переглянути miner key   >>> grep '^miner_key' $HOME/0g-storage-node/run/config.toml | sed 's/miner_key = "\(.*\)"/\1/' "
 printLine
 printLine
+}
+install
