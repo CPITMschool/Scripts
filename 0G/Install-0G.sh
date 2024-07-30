@@ -26,7 +26,7 @@ printColor blue "[4/6] Building binaries"
 cd && rm -rf 0g-chain
 git clone https://github.com/0glabs/0g-chain
 cd 0g-chain
-git checkout v0.2.3
+git checkout v0.2.5
 
 # Build binary
 make install
@@ -54,8 +54,8 @@ s%:26660%:27660%g" $HOME/.0gchain/config/config.toml
 sed -i.bak -e "s%:26657%:27657%g" $HOME/.0gchain/config/client.toml
 
 ### Download genesis and addrbook
-wget -O $HOME/.0gchain/config/genesis.json https://snapshots-testnet.unitynodes.com/0gchain-testnet/genesis.json
-wget -O $HOME/.0gchain/config/addrbook.json https://snapshots-testnet.unitynodes.com/0gchain-testnet/addrbook.json
+curl -L https://snapshots-testnet.nodejumper.io/0g-testnet/genesis.json > $HOME/.0gchain/config/genesis.json
+curl -L https://snapshots-testnet.nodejumper.io/0g-testnet/addrbook.json > $HOME/.0gchain/config/addrbook.json
 
 sed -i -e 's|^seeds *=.*|seeds = "81987895a11f6689ada254c6b57932ab7ed909b6@54.241.167.190:26656,010fb4de28667725a4fef26cdc7f9452cc34b16d@54.176.175.48:26656,e9b4bc203197b62cc7e6a80a64742e752f4210d5@54.193.250.204:26656,68b9145889e7576b652ca68d985826abd46ad660@18.166.164.232:26656"|' $HOME/.0gchain/config/config.toml
 
