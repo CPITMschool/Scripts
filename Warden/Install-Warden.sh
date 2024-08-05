@@ -28,8 +28,8 @@ cd $HOME
 rm -rf wardenprotocol
 git clone https://github.com/warden-protocol/wardenprotocol
 cd wardenprotocol
-git checkout v0.3.0
-make install-wardend
+git checkout v0.3.2
+make install
 source .bash_profile
 
 wardend config set client chain-id buenavista-1
@@ -40,7 +40,8 @@ source $HOME/.bash_profile
 wardend init "$NODE_MONIKER" --chain-id buenavista-1
 
 ### Download genesis and addrbook
-curl -L https://snapshots-testnet.unitynodes.com/warden-testnet/genesis.json > $HOME/.warden/config/genesis.json
+curl -L https://buenavista-genesis.s3.eu-west-1.amazonaws.com/genesis.json.tar.xz | tar xJf -
+mv genesis.json $HOME/.warden/config/genesis.json
 curl -L https://snapshots-testnet.unitynodes.com/warden-testnet/addrbook.json > $HOME/.warden/config/addrbook.json
 
 ### Set seeds
