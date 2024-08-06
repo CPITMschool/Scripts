@@ -81,7 +81,7 @@ EOF
 ### Download snapshot
 echo ""
 printColor blue "[5/6] Downloading snapshot for fast synchronization" 
-curl "https://snapshots-testnet.nodejumper.io/wardenprotocol-testnet/wardenprotocol-testnet_latest.tar.lz4" | lz4 -dc - | tar -xf - -C $HOME/.warden
+curl "https://snapshots-testnet.unitynodes.com/warden-testnet/warden-testnet-latest.tar.lz4" | lz4 -dc - | tar -xf - -C $HOME/.warden
 
 ### Start service and run node
 echo ""
