@@ -23,10 +23,11 @@ source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/depen
 echo ""
 printColor blue "[4/6] Building binaries"
 
-cd && rm -rf 0g-chain
-git clone https://github.com/0glabs/0g-chain
+cd $HOME
+rm -rf 0g-chain
+git clone -b v0.2.5 https://github.com/0glabs/0g-chain.git
 cd 0g-chain
-git checkout v0.2.5
+make install
 
 # Build binary
 make install
