@@ -47,7 +47,7 @@ if [ -d "0g-storage-node" ]; then
   exit 1
 fi
 
-git clone -b v0.3.4 https://github.com/0glabs/0g-storage-node.git
+git clone -b v0.4.1 https://github.com/0glabs/0g-storage-node.git
 cd 0g-storage-node
 git submodule update --init
 cargo build --release
@@ -75,6 +75,7 @@ s|^\s*#\s*rpc_listen_address = "0.0.0.0:5678"|rpc_listen_address = "0.0.0.0:5678
 s|^\s*#\s*mine_contract_address = ""|mine_contract_address = "0x6176AA095C47A7F79deE2ea473B77ebf50035421"|
 s|^\s*#\s*miner_key = ""|miner_key = ""|
 ' $HOME/0g-storage-node/run/config.toml
+sed -i 's/debug,hyper=info,h2=info/info,hyper=info,h2=info/g' $HOME/0g-storage-node/run/log_config
 
 read -p "Your Private KEY: " PRIVATE_KEY
 sed -i 's|^miner_key = ""|miner_key = "'"$PRIVATE_KEY"'"|' $HOME/0g-storage-node/run/config.toml
