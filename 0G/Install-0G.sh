@@ -24,13 +24,11 @@ echo ""
 printColor blue "[4/6] Building binaries"
 
 # Clone project repository
-cd && rm -rf 0g-chain
-git clone https://github.com/0glabs/0g-chain
-cd 0g-chain
-git checkout v0.3.1.alpha.1
-
-# Build binary
-make install
+cd $HOME
+rm -rf 0g-chain
+wget -O 0gchaind https://github.com/0glabs/0g-chain/releases/download/v0.3.1.alpha.1/0gchaind-linux-v0.3.1.alpha.1
+chmod +x $HOME/0gchaind
+sudo mv $HOME/0gchaind $(which 0gchaind)
 
 0gchaind config chain-id zgtendermint_16600-2
 0gchaind config keyring-backend test
