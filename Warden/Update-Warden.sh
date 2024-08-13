@@ -11,25 +11,28 @@ function printGreen {
 function update() {
   clear
   source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
-  printGreen "Оновлюємо Lava"
+  printGreen "Оновлюємо Warden"
   echo ""
-  sudo systemctl stop wardend
+  screen -S warden041
+cd $HOME
+rm -rf download
+mkdir download
+cd download
+wget https://github.com/warden-protocol/wardenprotocol/releases/download/v0.4.1/wardend_Linux_x86_64.zip
+unzip wardend_Linux_x86_64.zip
+rm wardend_Linux_x86_64.zip
+chmod +x $HOME/download/wardend
+sudo mv $HOME/download/wardend $(which wardend)
+sudo systemctl restart wardend && sudo journalctl -u wardend -f
 
-  cd $HOME
-  rm -rf wardenprotocol
-  git clone https://github.com/warden-protocol/wardenprotocol
-  cd wardenprotocol
-  git checkout v0.4.1
-
-  sudo systemctl start wardend
   sleep 2
   printGreen "Версія вашої ноди:"
   wardend version
   echo ""
   
   printDelimiter
-  printGreen "Переглянути журнал логів:         sudo journalctl -u lavad -f -o cat"
-  printGreen "Переглянути статус синхронізації: lavad status 2>&1 | jq .SyncInfo"
+  printGreen "Переглянути журнал логів:         sudo journalctl -u wardend -f -o cat"
+  printGreen "Переглянути статус синхронізації: wardend status 2>&1 | jq .SyncInfo"
   printGreen "В журналі логів спочатку ви можете побачити помилку Connection is closed. Але за 5-10 секунд нода розпочне синхронізацію"
   printDelimiter
 }
