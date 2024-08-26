@@ -1,0 +1,7 @@
+{ 
+"name": "Fractal",
+"cpu": "2 CPU",
+"ram": "4 GB RAM",
+"disk": "100 GB Storage" 
+"ubuntu": "22.04"
+}
