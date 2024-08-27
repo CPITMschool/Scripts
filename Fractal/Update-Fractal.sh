@@ -33,6 +33,7 @@ LimitNOFILE=infinity
 [Install]
 WantedBy=multi-user.target
 EOF
+sudo systemctl daemon-reload
 sudo systemctl restart fractald
 
 rm -rf $HOME/fractald-0.1.7-x86_64-linux-gnu.tar.gz*
