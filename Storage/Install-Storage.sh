@@ -65,7 +65,7 @@ echo 'export ZGS_LOG_SYNC_BLOCK="899040"' >> ~/.bash_profile
 echo 'export LOG_CONTRACT_ADDRESS="0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' >> ~/.bash_profile
 echo 'export MINE_CONTRACT="0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' >> ~/.bash_profile
 echo 'export REWARD_CONTRACT="0x51998C4d486F406a788B766d93510980ae1f9360"' >> ~/.bash_profile
-echo 'export BLOCKCHAIN_RPC_ENDPOINT="https://0g-evm.validatorvn.com"' >> ~/.bash_profile
+echo 'export BLOCKCHAIN_RPC_ENDPOINT="https://archive-0g.josephtran.xyz"' >> ~/.bash_profile
 source ~/.bash_profile
 
 read -p "Your Private KEY: " PRIVATE_KEY
