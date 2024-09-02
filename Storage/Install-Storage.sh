@@ -50,7 +50,7 @@ fi
 rm -rf 0g-storage-node
 git clone https://github.com/0glabs/0g-storage-node.git
 cd 0g-storage-node
-git checkout v0.4.4 
+git checkout v0.4.6 
 git submodule update --init
 cargo build --release
 sudo cp $HOME/0g-storage-node/target/release/zgs_node /usr/local/bin
@@ -61,7 +61,7 @@ echo ""
 ENR_ADDRESS=$(wget -qO- eth0.me)
 echo "export ENR_ADDRESS=${ENR_ADDRESS}" >> ~/.bash_profile
 echo 'export ZGS_LOG_DIR="$HOME/0g-storage-node/run/log"' >> ~/.bash_profile
-echo 'export ZGS_LOG_SYNC_BLOCK="595059"' >> ~/.bash_profile
+echo 'export ZGS_LOG_SYNC_BLOCK="899040"' >> ~/.bash_profile
 echo 'export LOG_CONTRACT_ADDRESS="0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' >> ~/.bash_profile
 echo 'export MINE_CONTRACT="0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' >> ~/.bash_profile
 echo 'export REWARD_CONTRACT="0x51998C4d486F406a788B766d93510980ae1f9360"' >> ~/.bash_profile
