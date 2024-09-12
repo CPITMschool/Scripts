@@ -82,6 +82,7 @@ printColor blue "[6/6] Start service and run node"
 sudo systemctl daemon-reload
 sudo systemctl enable 0gchaind.service
 sudo systemctl start 0gchaind.service
+tail -f /root/.0gchain/log/chain.log
 
 ### Useful commands
 printDelimiter
