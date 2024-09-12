@@ -41,8 +41,8 @@ source $HOME/.bash_profile
 0gchaind init "$NODE_MONIKER" --chain-id zgtendermint_16600-2
 
 ### Download genesis and addrbook
-wget -O $HOME/.0gchain/config/addrbook.json https://server-5.itrocket.net/testnet/og/addrbook.json
-wget -O $HOME/.0gchain/config/addrbook.json https://server-5.itrocket.net/testnet/og/addrbook.json
+wget https://snapshots-testnet.unitynodes.com/0gchain-testnet/addrbook.json -O $HOME/.0gchain/config/addrbook.json
+wget https://snapshots-testnet.unitynodes.com/0gchain-testnet/genesis.json -O $HOME/.0gchain/config/genesis.json
 
 PEERS="80fa309afab4a35323018ac70a40a446d3ae9caf@og-testnet-peer.itrocket.net:11656,e35e7fd0d24306a1bd1880cede7882fdb060087b@37.60.238.7:26656,8932538b172b16fad8058d0b3661c7168f8386a9@49.12.122.24:34656,d0a3d861d9b5f0d9aea19d372a738788bed82181@185.133.250.94:26646,cfdc5ae94fa5f36d4d4c9a9d09e09048806dccc0@95.217.120.205:27856,3439e019594d6a5199610c0276343c10a79c1a21@95.217.43.89:26656,928f42a91548484f35a5c98aa9dcb25fb1790a70@65.21.46.201:26656,829a2192dee46df728739266b8e72dd244b3b897@86.48.6.180:26656,61f94d8dc911f64a6f7e7e56da8614dfd59a803e@65.109.50.243:12656,b75bbb329a587e5c2044c6b96048717e8a15ec4f@185.218.125.192:12656"
 sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.0gchain/config/config.toml
