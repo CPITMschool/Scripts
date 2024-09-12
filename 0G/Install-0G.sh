@@ -26,9 +26,12 @@ printColor blue "[4/6] Building binaries"
 # Clone project repository
 cd $HOME
 rm -rf 0g-chain
-wget -O 0gchaind https://github.com/0glabs/0g-chain/releases/download/v0.3.1.alpha.1/0gchaind-linux-v0.3.1.alpha.1
-chmod +x $HOME/0gchaind
-sudo mv $HOME/0gchaind $(which 0gchaind)
+git clone https://github.com/0glabs/0g-chain.git
+cd 0g-chain
+git checkout v0.3.1
+git submodule update --init
+make install
+0gchaind version
 
 0gchaind config chain-id zgtendermint_16600-2
 0gchaind config keyring-backend test
@@ -37,43 +40,25 @@ source $HOME/.bash_profile
 
 0gchaind init "$NODE_MONIKER" --chain-id zgtendermint_16600-2
 
-##CHANGE PORTS
-sed -i.bak -e "s%:1317%:1417%g; 
-s%:8080%:8180%g;
-s%:9090%:9190%g;
-s%:9091%:9191%g;
-s%:8545%:8645%g;
-s%:8546%:8646%g;
-s%:6065%:6165%g" $HOME/.0gchain/config/app.toml	
-sed -i.bak -e "s%:26658%:27658%g;
-s%:26657%:27657%g;
-s%:6060%:6160%g;
-s%tcp://0.0.0.0:26656%tcp://0.0.0.0:27656%g;
-s%:26660%:27660%g" $HOME/.0gchain/config/config.toml
-sed -i.bak -e "s%:26657%:27657%g" $HOME/.0gchain/config/client.toml
-
 ### Download genesis and addrbook
-curl -L https://snapshots-testnet.nodejumper.io/0g-testnet/genesis.json > $HOME/.0gchain/config/genesis.json
-curl -L https://snapshots-testnet.nodejumper.io/0g-testnet/addrbook.json > $HOME/.0gchain/config/addrbook.json
+wget -O $HOME/.0gchain/config/addrbook.json https://server-5.itrocket.net/testnet/og/addrbook.json
+wget -O $HOME/.0gchain/config/addrbook.json https://server-5.itrocket.net/testnet/og/addrbook.json
 
-sed -i -e 's|^seeds *=.*|seeds = "81987895a11f6689ada254c6b57932ab7ed909b6@54.241.167.190:26656,010fb4de28667725a4fef26cdc7f9452cc34b16d@54.176.175.48:26656,e9b4bc203197b62cc7e6a80a64742e752f4210d5@54.193.250.204:26656,68b9145889e7576b652ca68d985826abd46ad660@18.166.164.232:26656"|' $HOME/.0gchain/config/config.toml
+PEERS="80fa309afab4a35323018ac70a40a446d3ae9caf@og-testnet-peer.itrocket.net:11656,e35e7fd0d24306a1bd1880cede7882fdb060087b@37.60.238.7:26656,8932538b172b16fad8058d0b3661c7168f8386a9@49.12.122.24:34656,d0a3d861d9b5f0d9aea19d372a738788bed82181@185.133.250.94:26646,cfdc5ae94fa5f36d4d4c9a9d09e09048806dccc0@95.217.120.205:27856,3439e019594d6a5199610c0276343c10a79c1a21@95.217.43.89:26656,928f42a91548484f35a5c98aa9dcb25fb1790a70@65.21.46.201:26656,829a2192dee46df728739266b8e72dd244b3b897@86.48.6.180:26656,61f94d8dc911f64a6f7e7e56da8614dfd59a803e@65.109.50.243:12656,b75bbb329a587e5c2044c6b96048717e8a15ec4f@185.218.125.192:12656"
+sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.0gchain/config/config.toml
 
-### Minimum gas price
-sed -i -e 's|^minimum-gas-prices *=.*|minimum-gas-prices = "0.0025ua0gi"|' $HOME/.0gchain/config/app.toml
+### Minimum gas price,pruning
+sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.0gchain/config/app.toml
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.0gchain/config/app.toml
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"50\"/" $HOME/.0gchain/config/app.toml
 
-### Set pruning
-pruning="custom"
-pruning_keep_recent="100"
-pruning_keep_every="0"
-pruning_interval="10"
-sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" $HOME/.0gchain/config/app.toml
-sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" $HOME/.0gchain/config/app.toml
-sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" $HOME/.0gchain/config/app.toml
-sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" $HOME/.0gchain/config/app.toml
+sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "0.00025ua0gi"|g' $HOME/.0gchain/config/app.toml
+sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.0gchain/config/config.toml
+sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchain/config/config.toml
 
 
 ### Downoload snapshot
-curl "https://snapshots-testnet.nodejumper.io/0g-testnet/0g-testnet_latest.tar.lz4" | lz4 -dc - | tar -xf - -C "$HOME/.0gchain"
+curl https://server-5.itrocket.net/testnet/og/og_2024-09-12_1039506_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 
 ### Create service
 sudo tee /etc/systemd/system/0gchaind.service > /dev/null << EOF
@@ -97,11 +82,10 @@ printColor blue "[6/6] Start service and run node"
 sudo systemctl daemon-reload
 sudo systemctl enable 0gchaind.service
 sudo systemctl start 0gchaind.service
-sudo journalctl -u 0gchaind -f -o cat
 
 ### Useful commands
 printDelimiter
-printGreen "Переглянути журнал логів:         sudo journalctl -u 0gchaind -f -o cat"
+printGreen "Переглянути журнал логів:         tail -f /root/.0gchain/log/chain.log "
 printGreen "Переглянути статус синхронізації: 0gchaind status | jq | grep \"catching_up\""
 source $HOME/.bash_profile
 printDelimiter
