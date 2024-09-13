@@ -58,7 +58,12 @@ sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchain/config/config.tom
 
 
 ### Downoload snapshot
-curl https://server-5.itrocket.net/testnet/og/og_2024-09-12_1039506_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
+0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain
+if curl -s --head curl https://server-5.itrocket.net/testnet/og/og_2024-09-13_1051470_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
+  curl https://server-5.itrocket.net/testnet/og/og_2024-09-13_1051470_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
+    else
+  echo "no snapshot founded"
+fi
 
 ### Create service
 sudo tee /etc/systemd/system/0gchaind.service > /dev/null << EOF
