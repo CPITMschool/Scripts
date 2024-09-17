@@ -58,7 +58,7 @@ cd $HOME
 
 printColor blue "Download Snapshots"
 cd $HOME
-wget --show-progress https://josephtran.cc/1609_storage_0gchain_snapshot.lz4
+wget --show-progress https://snapshots-testnet.unitynodes.com/0gchain-testnet/storage_0gchain_snapshot.lz4
 rm -rf $HOME/0g-storage-node/run/{db,log,network}
 lz4 -c -d 1609_storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
 
