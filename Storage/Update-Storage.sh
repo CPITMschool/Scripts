@@ -21,7 +21,7 @@ mv $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/config-testnet-turb
 printColor blue "Update 0G Storage"
 cd $HOME/0g-storage-node
 git fetch --all --tags
-git checkout v0.5.0
+git checkout v0.5.1
 git submodule update --init
 cargo build --release
 
