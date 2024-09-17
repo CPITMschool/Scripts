@@ -8,7 +8,7 @@ clear
 logo
 printColor blue "Install, update, package"
 sudo apt update && sudo apt upgrade -y && sleep 1
-sudo apt install curl tar wget clang pkg-config protobuf-compiler libssl-dev jq build-essential protobuf-compiler bsdmainutils git make ncdu gcc git jq chrony liblz4-tool lz4 aria2 -y && sleep 1
+sudo apt install curl tar wget clang pkg-config protobuf-compiler libssl-dev jq build-essential protobuf-compiler bsdmainutils git make ncdu gcc git jq chrony liblz4-tool lz4 aria2 pv -y && sleep 1
 sudo apt -qy upgrade -y
 sudo apt install jq -y
 
