@@ -13,6 +13,7 @@ sudo systemctl stop zgs
 printColor blue "Setup update" && sleep 1
 sudo apt-get update
 sudo apt-get openssl libssl-dev pkg-config
+sudo apt-get install wget lz4 aria2 pv -y
 
 printColor blue "Backup config file" && sleep 1
 mv $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/config-testnet-turbo_backup.toml
