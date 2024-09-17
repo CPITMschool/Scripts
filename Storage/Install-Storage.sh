@@ -51,7 +51,7 @@ cd $HOME
 rm -rf 0g-storage-node
 git clone https://github.com/0glabs/0g-storage-node.git
 cd 0g-storage-node
-git checkout v0.5.0 
+git checkout v0.5.1 
 cargo build --release
 sudo cp $HOME/0g-storage-node/target/release/zgs_node /usr/local/bin
 cd $HOME
