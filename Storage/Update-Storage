@@ -19,12 +19,6 @@ mv $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/config-testnet-turb
 
 printColor blue "Update 0G Storage"
 cd $HOME
-if [ -d "0g-storage-node" ]; then
-  echo "Directory 0g-storage-node already exists. Please remove it if you want to reinstall."
-  exit 1
-fi
-
-cd $HOME
 cd $HOME/0g-storage-node
 git fetch --all --tags
 git checkout v0.5.0
