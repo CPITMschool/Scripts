@@ -47,14 +47,13 @@ if [ -d "0g-storage-node" ]; then
   exit 1
 fi
 
-cd $HOME
-rm -rf 0g-storage-node
-git clone https://github.com/0glabs/0g-storage-node.git
-cd 0g-storage-node
-git checkout v0.5.1 
+git clone -b v0.5.1 https://github.com/0glabs/0g-storage-node.git
+cd $HOME/0g-storage-node
+git stash
+git fetch --all --tags
+git checkout 1434b94 
+git submodule update --init
 cargo build --release
-sudo cp $HOME/0g-storage-node/target/release/zgs_node /usr/local/bin
-cd $HOME
 
 printColor blue "Download Snapshots"
 cd $HOME
