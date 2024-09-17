@@ -1,13 +1,12 @@
 #!/bin/bash
 
-function install() {
+function update() {
 # Basic functions from URL
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/utils.sh)
 
 clear
 logo
 
-function update() {
 printColor blue "Stop node zgs" && sleep 1
 sudo systemctl stop zgs
 
