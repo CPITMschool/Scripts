@@ -19,13 +19,11 @@ printColor blue "Backup config file" && sleep 1
 mv $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/config-testnet-turbo_backup.toml
 
 printColor blue "Update 0G Storage"
-cd $HOME
 cd $HOME/0g-storage-node
 git fetch --all --tags
 git checkout v0.5.0
 git submodule update --init
 cargo build --release
-cd $HOME
 
 printColor blue "Download Snapshots"
 cd $HOME
