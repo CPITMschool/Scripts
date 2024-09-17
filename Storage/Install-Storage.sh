@@ -60,7 +60,7 @@ printColor blue "Download Snapshots"
 cd $HOME
 wget --show-progress https://snapshots-testnet.unitynodes.com/0gchain-testnet/storage_0gchain_snapshot.lz4
 rm -rf $HOME/0g-storage-node/run/{db,log,network}
-lz4 -c -d 1609_storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
+lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
 
 
 printColor blue "Node Configuration"
