@@ -59,11 +59,11 @@ sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchain/config/config.tom
 
 ### Downoload snapshot
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain
-if curl -s --head curl https://server-5.itrocket.net/testnet/og/og_2024-09-21_1153254_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
-  curl https://server-5.itrocket.net/testnet/og/og_2024-09-21_1153254_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
-    else
-  echo "no snapshot founded"
-fi
+cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
+0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
+curl https://snapshots-testnet.nodejumper.io/og/og_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
+mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
+
 
 ### Create service
 sudo tee /etc/systemd/system/0gchaind.service > /dev/null << EOF
