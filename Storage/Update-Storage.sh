@@ -20,7 +20,7 @@ git fetch --all --tags
 git checkout 3fc1543
 git submodule update --init
 cargo build --release
-cp $HOME/0g-storage-node/run/config.toml.backup $HOME/0g-storage-node/run/config.toml
+cp $HOME/0g-storage-node/run/config-testnet-turbo.toml.backup $HOME/0g-storage-node/run/config-testnet-turbo.toml
 sudo systemctl daemon-reload
 sudo systemctl enable zgs
 sudo systemctl restart zgs
