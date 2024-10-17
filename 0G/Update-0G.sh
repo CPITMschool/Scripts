@@ -25,10 +25,12 @@ PEERS="e371f26305869fd8294f6e57dc01ffbbd394a5ac@156.67.80.182:26656,f8e73164ef67
 sed -i "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.0gchain/config/config.toml
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 
+sudo systemctl stop 0gchaind
+cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 rm -rf $HOME/.0gchain/data 
-curl https://server-5.itrocket.net/testnet/og/og_2024-08-11_618878_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
-
+curl https://server-5.itrocket.net/testnet/og/og_2024-10-17_1513064_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
+sudo systemctl restart 0gchaind && sudo journalctl -u 0gchaind -f
 
 sudo systemctl restart 0gchaind 
   echo ""
