@@ -58,11 +58,12 @@ sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchain/config/config.tom
 
 
 ### Downoload snapshot
-0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain
+sudo systemctl stop 0gchaind
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
-0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
-curl "https://snapshots-testnet.nodejumper.io/og/og_latest.tar.lz4" | lz4 -dc - | tar -xf - -C "$HOME/.0gchain"
+rm -rf $HOME/.0gchain/data 
+curl https://server-5.itrocket.net/testnet/og/og_2024-10-17_1513064_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
+sudo systemctl restart 0gchaind && sudo journalctl -u 0gchaind -f
 
 
 ### Create service
