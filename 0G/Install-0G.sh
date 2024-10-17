@@ -28,7 +28,7 @@ cd $HOME
 rm -rf 0g-chain
 git clone https://github.com/0glabs/0g-chain.git
 cd 0g-chain
-git checkout v0.3.1
+git checkout v0.4.0
 git submodule update --init
 make install
 0gchaind version
@@ -61,7 +61,7 @@ sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchain/config/config.tom
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain --keep-addr-book
-curl https://snapshots-testnet.nodejumper.io/og/og_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
+curl "https://snapshots-testnet.nodejumper.io/og/og_latest.tar.lz4" | lz4 -dc - | tar -xf - -C "$HOME/.0gchain"
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
 
 
