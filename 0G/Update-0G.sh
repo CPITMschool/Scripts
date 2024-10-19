@@ -15,27 +15,23 @@ function update() {
   # download binary
 cd $HOME
 rm -rf 0g-chain
-wget -O 0gchaind https://github.com/0glabs/0g-chain/releases/download/v0.3.1.alpha.1/0gchaind-linux-v0.3.1.alpha.1
+wget -O 0gchaind https://github.com/0glabs/0g-chain/releases/download/v0.4.0/0gchaind-linux-v0.4.0
 chmod +x $HOME/0gchaind
 sudo mv $HOME/0gchaind $(which 0gchaind)
-sudo systemctl restart 
 
 sudo systemctl stop 0gchaind
-PEERS="e371f26305869fd8294f6e57dc01ffbbd394a5ac@156.67.80.182:26656,f8e73164ef67ec5288f663b271d320f303832b49@149.102.147.164:12656,c45a79a6e28fbee2b35b55bc2e18644fe4d20bb8@62.171.131.80:12656,7baa9325f18259079d701d649d22221232dd7a8d@116.202.51.84:26656,cd1d5fc0f6f35d0ef7d640c33b5159d84d07bd5c@161.97.110.100:12656,dbb44850914d0507e082ea81efd32662f883b222@62.169.26.33:26656,3be5290378f4ef5a5793bde6f5b7cf198f215366@65.108.200.101:26656,908a7a4f23d8a0933dbf11cbb0dbfe36e16f7d03@185.209.228.241:26646,c0cfc7c9d0cab4562e1933adf9fcc62f659f1b78@94.16.105.248:13456,a9d070c0c5900c3734a57c985f06098088b46583@213.199.32.62:12656,ecd31d198e658512967d964d8b80c1c8cc29a1d4@5.189.182.240:12656,970dd4efd48e6e09cb82ad15d133b953e3832c6f@38.242.255.168:12656,0a827d0e1966731fd8680490601f49e5e9dc7130@158.220.109.21:26656,b517215f5542d9978981d63b7b926f8d70d9c9db@62.171.167.145:12656,276186e07dd59c28306286156ce8738d357e761a@109.199.100.144:12656"
-sed -i "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.0gchain/config/config.toml
-cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
+PEERS="80fa309afab4a35323018ac70a40a446d3ae9caf@og-testnet-peer.itrocket.net:11656,16d33d0086c6f5d5a502e428ff3947980b00ecc6@37.27.172.60:26656,71e01e28fdf9c09dbd5229ecdf3d97c584c89385@149.50.96.112:26656,9a8da367ae4e31385cd00afe2315ea1910f50609@164.68.100.91:12656,63d519e5a5817cc6232c73b6d68e4a560ae10319@213.199.46.219:656,76cc5b9beaff9f33dc2a235e80fe2d47448463a7@95.216.114.170:26656,b396ffad15690cbc01267c3513176e7865d9cfa8@62.169.31.35:26656,d08764ae3f8c05297d905cffbf18a0d8ff93c169@37.27.127.220:16656,bad92a950179805d7962fff2edbeed9e85e0e9bb@159.69.72.177:12656,38bb09933a8f2175af407887fbb37945750ebd93@109.199.127.5:12656,13e74dd26858a94f9f87b1e2aeafcc6a5dbc3457@156.67.81.82:12656,da9ac9d516b1c2f788903b0e3ac7eb75de6eb9a1@144.91.116.117:12656,e9e76658a675aac816be5d8c2c93622bf2c0d4e8@161.97.117.185:12656,b5a3288693e5db00bf6fe46842a9cf591aa55811@37.27.134.110:51656,4e7e6e9a3bc116612644d11b43c9b32b4003bb2c@37.27.128.102:26656,0e8d6d513a37f93fa60143661c8b12ab92fe61e7@161.97.173.45:47656,a47046994182b9c1e71527dee7b3104699cc8024@184.174.32.235:12656,41cfcdd59edcd773560482e81b44bd3c5c0a15da@136.243.145.233:12656,23e96ba46f8120735e6b5646a755f32a65bf381b@146.59.118.198:29156,723cae01407afb7e1377ddacf6fc9e06e49d92eb@195.26.252.20:47656,102368751ef7abb363830bd7e48f8ada6245ab15@95.111.224.140:12656,0f25ec504b4ba0d0706338c0a4366ff44a6529e7@185.192.97.246:26656"
+sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.0gchain/config/config.toml
 
 sudo systemctl stop 0gchaind
 cp $HOME/.0gchain/data/priv_validator_state.json $HOME/.0gchain/priv_validator_state.json.backup
 rm -rf $HOME/.0gchain/data 
-curl https://server-5.itrocket.net/testnet/og/og_2024-10-17_1513064_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
+curl https://server-5.itrocket.net/testnet/og/og_2024-10-19_1547086_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
 mv $HOME/.0gchain/priv_validator_state.json.backup $HOME/.0gchain/data/priv_validator_state.json
 sudo systemctl restart 0gchaind && sudo journalctl -u 0gchaind -f
 
 sudo systemctl restart 0gchaind 
   echo ""
- 
-  
 }
 
 update
