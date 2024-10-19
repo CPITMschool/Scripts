@@ -21,9 +21,15 @@ git checkout 3fc1543
 git submodule update --init
 cargo build --release
 cp $HOME/0g-storage-node/run/config-testnet-turbo.toml.backup $HOME/0g-storage-node/run/config-testnet-turbo.toml
+cd $HOME
+wget --show-progress https://snapshots-testnet.unitynodes.com/0gchain-testnet/storage_0gchain_snapshot.lz4
+rm -rf $HOME/0g-storage-node/run/{db,log,network}
+lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
+rm -rf $HOME/storage_0gchain_snapshot.lz4
 sudo systemctl daemon-reload
 sudo systemctl enable zgs
 sudo systemctl restart zgs
+
 
 echo ""
 printLine
