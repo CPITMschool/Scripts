@@ -15,17 +15,16 @@ cp $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/0g-storage-node/run
 
 printColor blue "Setup update" && sleep 1
 cd $HOME/0g-storage-node
-git stash
 git fetch --all --tags
-git checkout 3fc1543
+git checkout v0.7.3
 git submodule update --init
-cargo build --release
-cp $HOME/0g-storage-node/run/config-testnet-turbo.toml.backup $HOME/0g-storage-node/run/config-testnet-turbo.toml
+cargo build --releas
 cd $HOME
 wget --show-progress https://snapshots-testnet.unitynodes.com/0gchain-testnet/storage_0gchain_snapshot.lz4
-rm -rf $HOME/0g-storage-node/run/{db,log,network}
+rm -rf $HOME/0g-storage-node/run/db
 lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
 rm -rf $HOME/storage_0gchain_snapshot.lz4
+mv $HOME/0g-storage-node/run/config-testnet-turbo.toml.backup $HOME/0g-storage-node/run/config-testnet-turbo.toml
 sudo systemctl daemon-reload
 sudo systemctl enable zgs
 sudo systemctl restart zgs
