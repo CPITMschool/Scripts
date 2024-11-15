@@ -64,7 +64,7 @@ lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/ru
 
 # Рестартимо ноду
 echo "Рестартимо ноду..."
-sudo systemctl restart zgs && sudo systemctl status zgs
+sudo systemctl restart zgs
 
 # Міняємо RPC
 echo "Міняємо RPC..."
