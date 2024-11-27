@@ -6,7 +6,7 @@ if ! command -v curl &> /dev/null; then
 fi
 
 # Load utility functions
-source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/utils.sh)
+source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/refs/heads/main/utils.sh)
 
 clear
 logo
