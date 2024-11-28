@@ -55,7 +55,7 @@ function main_menu {
                 nohup ./multiple-node > output.log 2>&1 &
                 read -p "Enter your Account ID: " IDENTIFIER
                 read -p "Enter your PIN: " PIN
-                ./multiple-cli bind --bandwidth-download 100 --identifier "$IDENTIFIER" --pin "$PIN" --storage 200 --bandwidth-upload 100
+                ./multiple-cli bind --bandwidth-download 100000 --identifier "$IDENTIFIER" --pin "$PIN" --storage 200000000 --bandwidth-upload 100000
                 printGreen "Installation completed successfully!"
                 ./multiple-cli status
                 ;;
