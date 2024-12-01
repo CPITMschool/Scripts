@@ -47,16 +47,14 @@ if [ -d "0g-storage-node" ]; then
   exit 1
 fi
 
-git clone -b v0.8.0 https://github.com/0glabs/0g-storage-node.git
-cd $HOME/0g-storage-node
-git fetch --all --tags
+cd $HOME
+rm -rf 0g-storage-node
+git clone https://github.com/0glabs/0g-storage-node.git
+cd 0g-storage-node
 git checkout v0.8.0
 git submodule update --init
-cargo build --release
 
 printColor blue "Download Snapshots"
-sudo apt-get update
-sudo apt-get install wget lz4 aria2 pv -y
 cd $HOME
 aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
 rm -rf $HOME/0g-storage-node/run/db
