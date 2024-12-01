@@ -47,27 +47,27 @@ if [ -d "0g-storage-node" ]; then
   exit 1
 fi
 
-git clone -b v0.5.1 https://github.com/0glabs/0g-storage-node.git
+git clone -b v0.8.0 https://github.com/0glabs/0g-storage-node.git
 cd $HOME/0g-storage-node
-git stash
 git fetch --all --tags
-git checkout 1434b94 
+git checkout v0.8.0
 git submodule update --init
 cargo build --release
 
 printColor blue "Download Snapshots"
+sudo apt-get update
+sudo apt-get install wget lz4 aria2 pv -y
 cd $HOME
-wget --show-progress https://snapshots-testnet.unitynodes.com/0gchain-testnet/storage_0gchain_snapshot.lz4
-rm -rf $HOME/0g-storage-node/run/{db,log,network}
+aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
+rm -rf $HOME/0g-storage-node/run/db
 lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
-rm -rf $HOME/storage_0gchain_snapshot.lz4
 
 printColor blue "Node Configuration"
 echo ""
 ENR_ADDRESS=$(wget -qO- eth0.me)
 echo "export ENR_ADDRESS=${ENR_ADDRESS}" >> ~/.bash_profile
 echo 'export ZGS_LOG_DIR="$HOME/0g-storage-node/run/log"' >> ~/.bash_profile
-echo 'export ZGS_LOG_SYNC_BLOCK="1033320"' >> ~/.bash_profile
+echo 'export ZGS_LOG_SYNC_BLOCK="595059"' >> ~/.bash_profile
 echo 'export LOG_CONTRACT_ADDRESS="0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' >> ~/.bash_profile
 echo 'export MINE_CONTRACT="0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' >> ~/.bash_profile
 echo 'export REWARD_CONTRACT="0x51998C4d486F406a788B766d93510980ae1f9360"' >> ~/.bash_profile
