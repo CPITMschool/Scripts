@@ -27,7 +27,7 @@ mv $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/config-testnet-turb
 echo "Клонуємо і створюємо новий бінарний файл..."
 cd $HOME/0g-storage-node
 git fetch --all --tags
-git checkout v0.7.3
+git checkout v0.8.0
 git submodule update --init
 cargo build --release
 
@@ -35,9 +35,6 @@ cargo build --release
 echo "Відновлюємо конфіг файл..."
 mv $HOME/config-testnet-turbo_backup.toml $HOME/0g-storage-node/run/config-testnet-turbo.toml
 
-# Рестартимо ноду
-echo "Рестартимо ноду..."
-sudo systemctl restart zgs && sudo systemctl status zgs
 
 # Перевіряємо версію сторедж ноди
 echo "Перевіряємо версію сторедж ноди..."
@@ -45,30 +42,9 @@ cd $HOME/0g-storage-node
 git log --decorate=short --oneline | grep "tag: v" | head -n 1
 git log -1 --pretty=oneline
 
-# Встановлюємо снепшот для сторедж ноди
-echo "Встановлюємо снепшот для сторедж ноди..."
-sudo systemctl stop zgs
-sudo apt-get update
-sudo apt-get install -y wget lz4 aria2 pv
-
-# Завантажуємо дані Сторедж ноди
-echo "Завантажуємо дані Сторедж ноди..."
-cd $HOME
-rm -f storage_0gchain_snapshot.lz4
-aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
-
-# Завантажуємо додаткові дані для Сторедж ноди
-echo "Розпаковуємо дані Сторедж ноди..."
-rm -rf $HOME/0g-storage-node/run/db
-lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
-
-# Рестартимо ноду
-echo "Рестартимо ноду..."
-sudo systemctl restart zgs
-
 # Міняємо RPC
 echo "Міняємо RPC..."
-BLOCKCHAIN_RPC_ENDPOINT="https://rpc.ankr.com/0g_newton"
+BLOCKCHAIN_RPC_ENDPOINT="https://16600.rpc.thirdweb.com"
 sed -i "s|^blockchain_rpc_endpoint = \".*\"|blockchain_rpc_endpoint = \"$BLOCKCHAIN_RPC_ENDPOINT\"|" $HOME/0g-storage-node/run/config-testnet-turbo.toml
 
 sudo systemctl restart zgs
