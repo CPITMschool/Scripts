@@ -32,13 +32,8 @@ printColor blue "Install, update, package"
 sudo apt update && sudo apt upgrade -y
 
 printColor blue "Install rust" && sleep 1
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source $HOME/.cargo/env
-
-rustup default stable
-rustup update
-rustup update nightly
-rustup target add wasm32-unknown-unknown --toolchain nightly
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+. "$HOME/.cargo/env"
 
 printColor blue "Install 0G Storage"
 cd $HOME
@@ -53,6 +48,7 @@ git clone https://github.com/0glabs/0g-storage-node.git
 cd 0g-storage-node
 git checkout v0.8.0
 git submodule update --init
+cargo build --release
 
 printColor blue "Download Snapshots"
 cd $HOME
@@ -72,8 +68,7 @@ echo 'export REWARD_CONTRACT="0x51998C4d486F406a788B766d93510980ae1f9360"' >> ~/
 echo 'export BLOCKCHAIN_RPC_ENDPOINT="https://evm-rpc.0gchain-testnet.unitynodes.com"' >> ~/.bash_profile
 source ~/.bash_profile
 
-read -p "Your Private KEY: " PRIVATE_KEY
-sed -i '/^# miner_key = ""/c\miner_key = "'"$PRIVATE_KEY"'"' $HOME/0g-storage-node/run/config-testnet-turbo.toml
+printf '\033[34mEnter your private key: \033[0m' && read -s PRIVATE_KEY && echo && printf '\033[32m%s\033[0m\n' "$PRIVATE_KEY"
 
 sed -i '
 s|^\s*#\?\s*network_dir\s*=.*|network_dir = "network"|
