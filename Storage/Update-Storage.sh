@@ -47,6 +47,13 @@ echo "Міняємо RPC..."
 BLOCKCHAIN_RPC_ENDPOINT="https://16600.rpc.thirdweb.com"
 sed -i "s|^blockchain_rpc_endpoint = \".*\"|blockchain_rpc_endpoint = \"$BLOCKCHAIN_RPC_ENDPOINT\"|" $HOME/0g-storage-node/run/config-testnet-turbo.toml
 
+# Грузимо снепшот
+cd $HOME
+rm storage_0gchain_snapshot.lz4
+aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
+rm -rf $HOME/0g-storage-node/run/db
+lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
+
 sudo systemctl restart zgs
 tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)
 
