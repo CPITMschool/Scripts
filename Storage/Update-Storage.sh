@@ -70,5 +70,5 @@ tail -f $HOME/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)
 
 
 
-
+}
 update
