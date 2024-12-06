@@ -7,7 +7,6 @@ source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/util
 clear
 logo
 
-#!/bin/bash
 
 # Зупинка сервісу
 echo "Зупинка сервісу zgs..."
@@ -68,6 +67,8 @@ sudo systemctl restart zgs
 # Перегляд логів
 echo "Виведення логів сервісу zgs..."
 tail -f $HOME/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)
+
+
 
 
 update
