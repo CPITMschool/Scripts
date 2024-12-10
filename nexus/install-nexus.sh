@@ -32,17 +32,40 @@ install_nexus_prover() {
     print "✅ Nexus Prover успішно завантажено та встановлено."
 }
 
+configure_service() {
+    print "⏳ Налаштовуємо systemd-сервіс для Nexus Prover..."
+    sudo bash -c "cat > /etc/systemd/system/nexus.service" <<EOF
+[Unit]
+Description=Nexus Prover Node
+After=network.target
+
+[Service]
+User=$USER
+WorkingDirectory=$HOME/nexus_prover
+ExecStart=$HOME/nexus_prover/nexus.sh
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable nexus.service
+    sudo systemctl start nexus.service
+    print "✅ Сервіс Nexus Prover успішно налаштовано та запущено."
+}
+
 finalize_installation() {
-    print "⏳ Перевіряємо встановлення Nexus Prover..."
-    if [ -f "$HOME/nexus_prover/nexus.sh" ]; then
-        print "✅ Успішно завершено! Використовуйте Nexus Prover за допомогою команди: ./nexus.sh"
-    fi
+    print "✅ Успішно завершено! Перевіряйте логи за допомогою команди:"
+    print "journalctl -u nexus.service -f -n 50"
 }
 
 main() {
     update_and_install_packages
     setup_environment
     install_nexus_prover
+    configure_service
     finalize_installation
 }
 
