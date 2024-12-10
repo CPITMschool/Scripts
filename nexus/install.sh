@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/logo.sh)
+source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
 GREEN='\033[1;32m'
 
