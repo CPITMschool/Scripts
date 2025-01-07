@@ -34,23 +34,18 @@ EOF
     done
 }
 
-
-
-
-
 function full() {
     printGreen "Оновлюємо сервер"
-    sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install wget && sudo ufw allow 9100/tcp && sudo ufw allow 9095/tcp
+    sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install wget curl && sudo ufw allow 9100/tcp && sudo ufw allow 9095/tcp
 
     printGreen "Встановлення node-exporter"
     cd $HOME && \
-    wget https://github.com/prometheus/node_exporter/releases/download/v1.2.0/node_exporter-1.2.0.linux-amd64.tar.gz && \
-    tar xvf node_exporter-1.2.0.linux-amd64.tar.gz && \
-    rm node_exporter-1.2.0.linux-amd64.tar.gz && \
-    sudo mv node_exporter-1.2.0.linux-amd64 node_exporter && \
-    chmod +x $HOME/node_exporter/node_exporter && \
-    mv $HOME/node_exporter/node_exporter /usr/bin && \
-    rm -Rvf $HOME/node_exporter/
+    NODE_EXPORTER_VERSION=$(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep tag_name | cut -d '"' -f 4) && \
+    wget https://github.com/prometheus/node_exporter/releases/download/$NODE_EXPORTER_VERSION/node_exporter-$NODE_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    tar xvf node_exporter-$NODE_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    rm node_exporter-$NODE_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    sudo mv node_exporter-$NODE_EXPORTER_VERSION.linux-amd64/node_exporter /usr/bin/ && \
+    rm -Rvf node_exporter-$NODE_EXPORTER_VERSION.linux-amd64
 
     sudo tee /etc/systemd/system/exporterd.service > /dev/null <<EOF
 [Unit]
@@ -71,10 +66,11 @@ EOF
     sudo systemctl restart exporterd
 
     printGreen "Встановлюємо Prometheus"
-    wget https://github.com/prometheus/prometheus/releases/download/v2.28.1/prometheus-2.28.1.linux-amd64.tar.gz && \
-    tar xvf prometheus-2.28.1.linux-amd64.tar.gz && \
-    rm prometheus-2.28.1.linux-amd64.tar.gz && \
-    mv prometheus-2.28.1.linux-amd64 prometheus
+    PROMETHEUS_VERSION=$(curl -s https://api.github.com/repos/prometheus/prometheus/releases/latest | grep tag_name | cut -d '"' -f 4) && \
+    wget https://github.com/prometheus/prometheus/releases/download/$PROMETHEUS_VERSION/prometheus-$PROMETHEUS_VERSION.linux-amd64.tar.gz && \
+    tar xvf prometheus-$PROMETHEUS_VERSION.linux-amd64.tar.gz && \
+    rm prometheus-$PROMETHEUS_VERSION.linux-amd64.tar.gz && \
+    mv prometheus-$PROMETHEUS_VERSION.linux-amd64 prometheus
     wget -O $HOME/prometheus/prometheus.yml https://raw.githubusercontent.com/asapov01/Install-Grafana/main/prometheus.yml && \
     printGreen "Додайте IP та впишіть назву сервера, для відображення серверів в Grafana"
     read -p "Введіть IP: " ip
@@ -128,9 +124,10 @@ EOF
     sudo systemctl enable prometheusd && \
 
     printGreen "Встановлюємо Grafana"
-    sudo apt-get install -y adduser libfontconfig1 && \
-    wget https://dl.grafana.com/oss/release/grafana_8.0.6_amd64.deb && \
-    sudo dpkg -i grafana_8.0.6_amd64.deb
+    GRAFANA_VERSION=$(curl -s https://api.github.com/repos/grafana/grafana/releases/latest | grep tag_name | cut -d '"' -f 4) && \
+    wget https://dl.grafana.com/oss/release/grafana_$GRAFANA_VERSION_amd64.deb && \
+    sudo dpkg -i grafana_$GRAFANA_VERSION_amd64.deb && \
+    rm grafana_$GRAFANA_VERSION_amd64.deb
 
     sudo systemctl daemon-reload && \
     sudo systemctl enable grafana-server && \
@@ -146,13 +143,12 @@ function node_exporter() {
     printGreen "Встановлюємо Node Exporter"
     sudo apt-get update && sudo apt-get upgrade -y && sudo ufw allow 9100/tcp && sudo ufw allow 9095/tcp
     cd $HOME && \
-    wget https://github.com/prometheus/node_exporter/releases/download/v1.2.0/node_exporter-1.2.0.linux-amd64.tar.gz && \
-    tar xvf node_exporter-1.2.0.linux-amd64.tar.gz && \
-    rm node_exporter-1.2.0.linux-amd64.tar.gz && \
-    sudo mv node_exporter-1.2.0.linux-amd64 node_exporter && \
-    chmod +x $HOME/node_exporter/node_exporter && \
-    mv $HOME/node_exporter/node_exporter /usr/bin && \
-    rm -Rvf $HOME/node_exporter/
+    NODE_EXPORTER_VERSION=$(curl -s https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep tag_name | cut -d '"' -f 4) && \
+    wget https://github.com/prometheus/node_exporter/releases/download/$NODE_EXPORTER_VERSION/node_exporter-$NODE_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    tar xvf node_exporter-$NODE_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    rm node_exporter-$NODE_EXPORTER_VERSION.linux-amd64.tar.gz && \
+    sudo mv node_exporter-$NODE_EXPORTER_VERSION.linux-amd64/node_exporter /usr/bin/ && \
+    rm -Rvf node_exporter-$NODE_EXPORTER_VERSION.linux-amd64
 
     sudo tee /etc/systemd/system/prometheusd.service > /dev/null <<EOF
 [Unit]
