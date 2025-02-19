@@ -14,31 +14,69 @@ function update() {
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
-### Оновлення конфігурації P2P
+### Вибір методу оновлення
 echo ""
-printGreen "[1/4] Оновлення конфігурації P2P-мережі"
-echo '{"root_node_ips": [{"Ip":"13.231.52.81"}], "chain": "Testnet", "try_new_peers": true}' > override_gossip_config.json
+printGreen "Оберіть метод оновлення:"
+echo "1) Оновлення через screen"
+echo "2) Оновлення через service"
+echo -en ">>> "
+read -r METHOD
 
-### Завантаження нового override_gossip_config.json
-echo ""
-printGreen "[2/4] Завантаження актуального override_gossip_config.json"
-wget meria-hyperliquid-service.s3.eu-west-3.amazonaws.com/testnet/override_gossip_config.json -O override_gossip_config.json
+if [[ "$METHOD" == "1" ]]; then
+  ### Оновлення через screen
+  printGreen "[1/6] Вхід у screen-сесію"
+  screen -r pipe || echo "Screen pipe не знайдено. Можливо, нода не запущена в screen."
 
-### Зупинка ноди
-echo ""
-printGreen "[3/4] Зупинка ноди (входження в screen і зупинка логів)"
-screen -r hyperliquid -X quit
+  printGreen "[2/6] Завантаження оновленого бінарного файлу"
+  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.7/pop && cd pipe
 
-### Перезапуск ноди
-echo ""
-printGreen "[4/4] Перезапуск ноди"
-screen -dmS hyperliquid ~/hl-visor run-non-validator
+  printGreen "[3/6] Налаштування прав доступу"
+  chmod +x pop
 
-### Завершення оновлення
+  printGreen "[4/6] Переміщення бінарного файлу"
+  mv $HOME/pop $HOME/pipe/pop
+
+  printGreen "[5/6] Оновлення ноди"
+  cd $HOME/pipe && ./pop --refresh
+
+  printGreen "[6/6] Перевірка версії та статусу"
+  ./pop --version
+  $HOME/pipe/pop --status
+
+elif [[ "$METHOD" == "2" ]]; then
+  ### Оновлення через systemd-сервіс
+  printGreen "[1/7] Зупинка сервісу"
+  sudo systemctl stop pipe
+
+  printGreen "[2/7] Завантаження оновленого бінарного файлу"
+  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.7/pop && cd pipe
+
+  printGreen "[3/7] Налаштування прав доступу"
+  chmod +x pop
+
+  printGreen "[4/7] Переміщення бінарного файлу"
+  mv $HOME/pop $HOME/pipe/pop
+
+  printGreen "[5/7] Оновлення ноди"
+  cd $HOME/pipe && ./pop --refresh
+
+  printGreen "[6/7] Запуск сервісу"
+  sudo systemctl restart pipe
+
+  printGreen "[7/7] Перевірка версії та статусу"
+  ./pop --version
+  $HOME/pipe/pop --status
+
+else
+  printGreen "❌ Невірний вибір. Спробуйте ще раз."
+  exit 1
+fi
+
 printDelimiter
 printGreen "✅ Оновлення завершено!"
-printGreen "Щоб перевірити логи: screen -r hyperliquid"
-printGreen "Якщо потрібно зупинити логування, натисніть: Ctrl + A + D"
+printGreen "Переглянути статус: $HOME/pipe/pop --status"
+printGreen "Перевірити версію:  $HOME/pipe/pop --version"
+printGreen "Щоб увійти у screen: screen -r pipe"
 printDelimiter
 }
 
