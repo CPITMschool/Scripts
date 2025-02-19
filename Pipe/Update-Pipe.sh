@@ -28,7 +28,7 @@ if [[ "$METHOD" == "1" ]]; then
   screen -r pipe || echo "Screen pipe не знайдено. Можливо, нода не запущена в screen."
 
   printGreen "[2/6] Завантаження оновленого бінарного файлу"
-  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.7/pop && cd pipe
+  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.8/pop && cd pipe
 
   printGreen "[3/6] Налаштування прав доступу"
   chmod +x pop
@@ -49,7 +49,7 @@ elif [[ "$METHOD" == "2" ]]; then
   sudo systemctl stop pipe
 
   printGreen "[2/7] Завантаження оновленого бінарного файлу"
-  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.7/pop && cd pipe
+  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.8/pop && cd pipe
 
   printGreen "[3/7] Налаштування прав доступу"
   chmod +x pop
