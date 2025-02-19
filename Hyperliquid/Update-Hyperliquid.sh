@@ -8,8 +8,6 @@ function printGreen {
   echo -e "\e[1m\e[32m${1}\e[0m"
 }
 
-source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
-
 function update() {
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
