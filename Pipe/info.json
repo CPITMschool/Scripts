@@ -2,5 +2,6 @@
 "name": "Pipe Network",
 "cpu": "4 CPU",
 "ram": "32 GB RAM",
-"disk": "200 GB Storage" 
+"disk": "200 GB Storage",
+"ver. Ubuntu": "22.04"
 }
