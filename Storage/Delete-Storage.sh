@@ -19,4 +19,6 @@ function delete() {
 logo
 delete
 
-printGreen "0G Storage node видалено"
+printDelimiter
+printGreen "✅ 0G Storage node видалено"
+printDelimiter

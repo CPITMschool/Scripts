@@ -26,15 +26,16 @@ echo "Створення резервної копії файлу конфігу
 mv $HOME/0g-storage-node/run/config-testnet-turbo.toml $HOME/config-testnet-turbo_backup.toml
 
 # Оновлення репозиторію
-echo "Оновлення репозиторію 0g-storage-node..."
 cd $HOME/0g-storage-node
 git fetch --all --tags
-git checkout v0.8.0
+git checkout v0.8.4
 git submodule update --init
+cargo build --release
 
 # Компіляція проекту
 echo "Компіляція проекту..."
 cargo build --release
+$HOME/0g-storage-node/target/release/zgs_node --version
 
 # Відновлення файлу конфігурації
 echo "Відновлення файлу конфігурації..."
@@ -52,13 +53,6 @@ rm -f storage_0gchain_snapshot.lz4
 aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
 rm -rf $HOME/0g-storage-node/run/db
 lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
-
-# Оновлення файлу конфігурації
-echo "Оновлення файлу конфігурації з новими вузлами та RPC-ендпоінтом..."
-sed -i 's|^network_boot_nodes = .*|network_boot_nodes = ["/ip4/47.251.117.133/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9wiQTNu4pDCgps","/ip4/47.76.61.226/udp/1234/p2p/16Uiu2HAm2k6ua2mGgvZ8rTMV8GhpW71aVzkQWy7D37TTDuLCpgmX"]|g' $HOME/0g-storage-node/run/config-testnet-turbo.toml
-
-BLOCKCHAIN_RPC_ENDPOINT="https://16600.rpc.thirdweb.com"
-sed -i "s|^blockchain_rpc_endpoint = \".*\"|blockchain_rpc_endpoint = \"$BLOCKCHAIN_RPC_ENDPOINT\"|" $HOME/0g-storage-node/run/config-testnet-turbo.toml
 
 # Перезапуск сервісу
 echo "Перезапуск сервісу zgs..."

@@ -7,24 +7,21 @@ source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/util
 clear
 logo
 printColor blue "Install, update, package"
-sudo apt update && sudo apt upgrade -y && sleep 1
-sudo apt install curl tar wget clang pkg-config protobuf-compiler libssl-dev jq build-essential protobuf-compiler bsdmainutils git make ncdu gcc git jq chrony liblz4-tool lz4 aria2 pv -y && sleep 1
-sudo apt -qy upgrade -y
-sudo apt install jq -y
+sudo apt update && sudo apt upgrade -y
+sudo apt install curl git wget htop tmux build-essential jq make gcc tar clang pkg-config libssl-dev ncdu cmake -y
 
 printColor blue "Remove and install Go" && sleep 1
-sudo rm -rf /usr/local/go
-sudo rm /etc/paths.d/go || true
-sudo apt-get remove -y golang-go || true
-sudo apt-get remove --auto-remove -y golang-go || true
+cd $HOME
 VER="1.22.0"
 wget "https://golang.org/dl/go$VER.linux-amd64.tar.gz"
+sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf "go$VER.linux-amd64.tar.gz"
 rm "go$VER.linux-amd64.tar.gz"
 [ ! -f ~/.bash_profile ] && touch ~/.bash_profile
-echo "export PATH=\$PATH:/usr/local/go/bin:~/go/bin" >> ~/.bash_profile
+echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin" >> ~/.bash_profile
 source $HOME/.bash_profile
 [ ! -d ~/go/bin ] && mkdir -p ~/go/bin
+go version
 
 cd $HOME
 
@@ -32,8 +29,9 @@ printColor blue "Install, update, package"
 sudo apt update && sudo apt upgrade -y
 
 printColor blue "Install rust" && sleep 1
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-. "$HOME/.cargo/env"
+cd $HOME
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source $HOME/.cargo/env
 
 printColor blue "Install 0G Storage"
 cd $HOME
@@ -46,27 +44,27 @@ cd $HOME
 rm -rf 0g-storage-node
 git clone https://github.com/0glabs/0g-storage-node.git
 cd 0g-storage-node
-git checkout v0.8.0
+git checkout v0.8.4
 git submodule update --init
 cargo build --release
 
-printColor blue "Download Snapshots"
-cd $HOME
-aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
-rm -rf $HOME/0g-storage-node/run/db
-lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
+
 
 printColor blue "Node Configuration"
 echo ""
 ENR_ADDRESS=$(wget -qO- eth0.me)
-echo "export ENR_ADDRESS=${ENR_ADDRESS}" >> ~/.bash_profile
-echo 'export ZGS_LOG_DIR="$HOME/0g-storage-node/run/log"' >> ~/.bash_profile
-echo 'export ZGS_LOG_SYNC_BLOCK="595059"' >> ~/.bash_profile
+
+echo "export ENR_ADDRESS=$ENR_ADDRESS" >> ~/.bash_profile
 echo 'export LOG_CONTRACT_ADDRESS="0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' >> ~/.bash_profile
 echo 'export MINE_CONTRACT="0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' >> ~/.bash_profile
 echo 'export REWARD_CONTRACT="0x51998C4d486F406a788B766d93510980ae1f9360"' >> ~/.bash_profile
-echo 'export BLOCKCHAIN_RPC_ENDPOINT="https://evm-rpc.0gchain-testnet.unitynodes.com"' >> ~/.bash_profile
+echo 'export ZGS_LOG_SYNC_BLOCK="595059"' >> ~/.bash_profile
+echo 'export BLOCKCHAIN_RPC_ENDPOINT="http://x.x.x.x:8545"' >> ~/.bash_profile
+
 source ~/.bash_profile
+
+# Download config example
+wget -O $HOME/0g-storage-node/run/config-testnet-turbo.toml https://server-7.itrocket.net/testnet/og/storage/config-testnet-turbo.toml
 
 printf '\033[34mEnter your private key: \033[0m' && read -s PRIVATE_KEY && echo && printf '\033[32m%s\033[0m\n' "$PRIVATE_KEY"
 
@@ -116,7 +114,16 @@ LimitNOFILE=65535
 WantedBy=multi-user.target
 EOF
 
-printColor blue "Start 0G Storage Node"
+printColor blue "Download snapshot 0G Storage"
+sudo apt-get update
+sudo apt-get install wget lz4 aria2 pv -y
+cd $HOME
+rm storage_0gchain_snapshot.lz4
+aria2c -x 16 -s 16 -k 1M https://josephtran.co/storage_0gchain_snapshot.lz4
+rm -rf $HOME/0g-storage-node/run/db
+lz4 -c -d storage_0gchain_snapshot.lz4 | pv | tar -x -C $HOME/0g-storage-node/run
+
+printColor blue "Start 0G Storage"
 
 sudo systemctl daemon-reload
 sudo systemctl enable zgs
