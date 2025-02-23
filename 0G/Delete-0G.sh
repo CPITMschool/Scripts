@@ -15,6 +15,7 @@ function delete() {
   sudo rm -rf $HOME/0g-chain
   sudo rm -rf /etc/systemd/system/0gchaind.service
   sudo rm -rf /usr/local/bin/0gchaind
+  sudo rm $(which 0gchaind)
   sudo systemctl daemon-reload
 }
 

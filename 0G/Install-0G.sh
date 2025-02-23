@@ -28,7 +28,7 @@ cd $HOME
 rm -rf 0g-chain
 wget -O 0gchaind https://github.com/0glabs/0g-chain/releases/download/v0.5.0/0gchaind-linux-v0.5.0
 chmod +x $HOME/0gchaind
-sudo mv $HOME/0gchaind $HOME/go/bin
+sudo mkdir -p "$HOME/go/bin" && sudo mv "$HOME/0gchaind" "$HOME/go/bin"
 0gchaind version
 
 0gchaind config chain-id zgtendermint_16600-2
@@ -60,8 +60,8 @@ sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchain/config/config.tom
 
 ### Downoload snapshot
 0gchaind tendermint unsafe-reset-all --home $HOME/.0gchain
-if curl -s --head curl https://server-5.itrocket.net/testnet/og/og_2025-02-18_3296772_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
-  curl https://server-5.itrocket.net/testnet/og/og_2025-02-18_3296772_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
+if curl -s --head curl https://server-5.itrocket.net/testnet/og/og_2025-02-23_3356409_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
+  curl https://server-5.itrocket.net/testnet/og/og_2025-02-23_3356409_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchain
     else
   echo "no snapshot found"
 fi
