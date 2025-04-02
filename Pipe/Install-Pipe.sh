@@ -81,7 +81,7 @@ elif [[ "$METHOD" == "2" ]]; then
   bash <(curl -s https://raw.githubusercontent.com/asapov01/Backup/main/server-upgrade.sh)
 
   printGreen "[2/6] Завантаження бінарного файлу"
-  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.5/pop && cd pipe
+  cd && mkdir -p $HOME/pipe && wget -O $HOME/pipe/pop https://dl.pipecdn.app/v0.2.8/pop && cd pipe
 
   printGreen "[3/6] Налаштування прав доступу"
   chmod +x pop
