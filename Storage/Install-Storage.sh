@@ -64,7 +64,7 @@ echo 'export BLOCKCHAIN_RPC_ENDPOINT="http://x.x.x.x:8545"' >> ~/.bash_profile
 source ~/.bash_profile
 
 # Download config example
-wget -O $HOME/0g-storage-node/run/config-testnet-turbo.toml https://server-7.itrocket.net/testnet/og/storage/config-testnet-turbo.toml
+wget -O $HOME/0g-storage-node/run/config-testnet-turbo.toml https://snapshots.unitynodes.com/0gchain-testnet/config-testnet-turbo.toml
 
 printf '\033[34mEnter your private key: \033[0m' && read -s PRIVATE_KEY && echo && printf '\033[32m%s\033[0m\n' "$PRIVATE_KEY"
 
