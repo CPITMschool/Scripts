@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # ================================
@@ -45,7 +44,7 @@ sudo tar -xzf pop-v0.3.0-linux-x64.tar.gz
 chmod +x pop
 sudo chown -R popcache:popcache /opt/popcache
 
-
+# Запит на введення значень
 echo "Enter POP name:"
 read POP_NAME
 
@@ -79,6 +78,7 @@ read MEMORY_CACHE_SIZE
 echo "Enter disk cache size in GB (recommended 100):"
 read DISK_CACHE_SIZE
 
+# Створення конфігурації
 sudo tee /opt/popcache/config.json > /dev/null <<EOF
 {
   "pop_name": "$POP_NAME",
