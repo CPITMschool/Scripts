@@ -41,7 +41,7 @@ echo "[5/8] Downloading binary..."
 sudo mkdir -p /opt/popcache
 cd /opt/popcache
 wget https://download.pipe.network/static/pop-v0.3.0-linux-x64.tar.gz
-tar -xzf pop-v0.3.0-linux-x64.tar.gz
+sudo tar -xzf pop-v0.3.0-linux-x64.tar.gz
 chmod +x pop
 sudo chown -R popcache:popcache /opt/popcache
 
