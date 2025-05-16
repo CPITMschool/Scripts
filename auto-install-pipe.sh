@@ -43,6 +43,7 @@ sudo wget https://download.pipe.network/static/pop-v0.3.0-linux-x64.tar.gz
 sudo tar -xzf pop-v0.3.0-linux-x64.tar.gz
 sudo chmod +x pop
 sudo chown -R popcache:popcache /opt/popcache
+sudo setcap 'cap_net_bind_service=+ep' /opt/popcache/pop
 
 echo "Введіть назву POP вузла:"
 read POP_NAME
