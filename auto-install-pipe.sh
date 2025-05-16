@@ -50,6 +50,8 @@ echo "Введіть розташування (місто, країна):"
 read POP_LOCATION
 echo "Введіть invite code:"
 read INVITE_CODE
+echo "Введіть IP Server:"
+read HOST
 echo "Введіть назву ноди:"
 read NODE_NAME
 echo "Введіть ваше ім’я:"
@@ -75,7 +77,7 @@ sudo tee /opt/popcache/config.json > /dev/null <<EOF
   "pop_location": "$POP_LOCATION",
   "invite_code": "$INVITE_CODE",
   "server": {
-    "host": "0.0.0.0",
+    "host": "$HOST",
     "port": 443,
     "http_port": 80,
     "workers": 40
