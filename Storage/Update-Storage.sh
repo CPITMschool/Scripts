@@ -8,11 +8,11 @@ clear
 logo
 
 
-# Зупинка сервісу
+# Зупинка ноди
 echo -e "\e[1;33m[1/6] Stopping Storage Node...\e[0m"
-sudo systemctl stop storage_node > /dev/null 2>&1
-rm -rf $HOME/0g-storage-node/run/db
-echo -e "\e[32m✅ Storage Node stopped successfully\e[0m"
+sudo systemctl stop zgs > /dev/null 2>&1 & spinner
+echo -e "\e[32m✅ Node stopped successfully\e[0m"
+sleep 1
 
 # Оновлення системних пакетів
 echo -e "\e[1;33m[2/6] Checking Rust and Cargo...\e[0m"
@@ -30,6 +30,7 @@ else
 fi
 sleep 1
 
+# Створення нового бінарного файлу
 echo -e "\e[1;33m[3/6] Cloning and building binary...\e[0m"
 cd "$HOME/0g-storage-node" || { echo "❌ Project directory not found."; exit 1; }
 git stash > /dev/null 2>&1
@@ -40,15 +41,15 @@ cargo build --release
 echo -e "\e[32m✅ Build complete\e[0m"
 sleep 1
 
-# Step 4: Replace config
+# Replace config
 echo -e "\e[1;33m[4/6] Updating config.toml...\e[0m"
 rm -rf "$HOME/0g-storage-node/run/db" > /dev/null 2>&1
 cp "$HOME/0g-storage-node/run/config.toml" "$HOME/zgs-config.toml.backup" > /dev/null 2>&1
-curl -o "$HOME/0g-storage-node/run/config.toml" https://vault.astrostake.xyz/0g-labs/config-v3.toml > /dev/null 2>&1 & spinner
+curl -o "$HOME/0g-storage-node/run/config.toml" https://snapshots.unitynodes.app/0gchain-testnet/config-v3.toml > /dev/null 2>&1 & spinner
 echo -e "\e[32m✅ Config updated\e[0m"
 sleep 1
 
-# Step 5: Inject private key
+# Inject private key
 echo -e "\e[1;33m[5/6] Injecting private key...\e[0m"
 echo -n "🔑 Private Key: "
 read PRIVATE_KEY
@@ -98,4 +99,5 @@ echo -e "\n📡 To check block & peers:"
 echo "  source <(curl -s https://astrostake.xyz/check_block.sh)"
 
 }
+
 update
