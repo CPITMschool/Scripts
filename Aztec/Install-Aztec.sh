@@ -20,9 +20,9 @@ function give_ack {
   echo ""
 }
 
-# Перевірка на root
-if [[ $EUID -ne 0 ]]; then
-   echo "Цей скрипт треба запускати як root. Використайте sudo."
+# Перевірка на root або sudo
+if [[ "$EUID" -ne 0 ]]; then
+   echo "Цей скрипт потрібно запускати з правами root. Використайте sudo ./назва_скрипта.sh"
    exit 1
 fi
 
@@ -43,21 +43,21 @@ bash <(curl -s https://raw.githubusercontent.com/asapov01/Backup/main/server-upg
 ### Встановлення Docker та залежностей
 echo ""
 printGreen "[2/6] Встановлення додаткових залежностей"
-apt-get update && apt-get upgrade -y
-apt install -y build-essential git jq lz4 make nano automake autoconf tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev clang bsdmainutils ncdu unzip
+sudo apt-get update && sudo apt-get upgrade -y
+sudo apt install -y build-essential git jq lz4 make nano automake autoconf tmux htop nvme-cli pkg-config libssl-dev libleveldb-dev clang bsdmainutils ncdu unzip
 
 if ! command -v docker &>/dev/null; then
-  curl -fsSL https://get.docker.com | sh
-  usermod -aG docker "$USER"
+  curl -fsSL https://get.docker.com | sudo sh
+  sudo usermod -aG docker "$USER"
 fi
 
-systemctl start docker
-chmod 666 /var/run/docker.sock
+sudo systemctl start docker
+sudo chmod 666 /var/run/docker.sock
 
-iptables -I INPUT -p tcp --dport 40400 -j ACCEPT
-iptables -I INPUT -p udp --dport 40400 -j ACCEPT
-iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
-sh -c "iptables-save > /etc/iptables/rules.v4"
+sudo iptables -I INPUT -p tcp --dport 40400 -j ACCEPT
+sudo iptables -I INPUT -p udp --dport 40400 -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 8080 -j ACCEPT
+sudo sh -c "iptables-save > /etc/iptables/rules.v4"
 
 mkdir -p "$HOME/aztec-sequencer/data"
 cd "$HOME/aztec-sequencer"
@@ -75,7 +75,7 @@ if [ -z "$LATEST" ]; then
 fi
 
 echo -e "${GREEN}Використовується версія: $LATEST${NC}"
-docker pull aztecprotocol/aztec:"$LATEST"
+sudo docker pull aztecprotocol/aztec:"$LATEST"
 
 read -p "RPC Sepolia URL: " RPC_URL
 read -p "Beacon Sepolia URL: " CONS_URL
@@ -92,7 +92,7 @@ WALLET=$WALLET_ADDR
 EOF
 
 printGreen "Запускаємо контейнер..."
-docker run --restart unless-stopped --platform linux/amd64 -d \
+sudo docker run --restart unless-stopped --platform linux/amd64 -d \
   --name aztec-sequencer \
   --network host \
   --env-file "$HOME/aztec-sequencer/.env" \
@@ -104,10 +104,10 @@ docker run --restart unless-stopped --platform linux/amd64 -d \
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}❌ Контейнер не запустився. Перевірте логи:${NC}"
-  echo "docker logs aztec-sequencer"
+  echo "sudo docker logs aztec-sequencer"
 else
   echo -e "${GREEN}✅ Нода встановлена та запущена.${NC}"
-  docker logs --tail 100 -f aztec-sequencer
+  sudo docker logs --tail 100 -f aztec-sequencer
 fi
 
 give_ack
@@ -116,7 +116,7 @@ give_ack
 printDelimiter
 printGreen "Переглянути логи ноди:  sudo docker logs aztec-sequencer"
 printGreen "Зупинити ноду:          sudo docker stop aztec-sequencer"
-printGreen "Рестарт ноди:          sudo docker restart aztec-sequencer"
+printGreen "Рестарт ноди:           sudo docker restart aztec-sequencer"
 printDelimiter
 }
 
