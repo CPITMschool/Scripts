@@ -20,12 +20,6 @@ function give_ack {
   echo ""
 }
 
-# Перевірка на root або sudo
-if [[ "$EUID" -ne 0 ]]; then
-   echo "Цей скрипт потрібно запускати з правами root. Використайте sudo ./назва_скрипта.sh"
-   exit 1
-fi
-
 # Залежності
 source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
 
