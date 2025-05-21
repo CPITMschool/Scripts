@@ -49,10 +49,20 @@ function install() {
     printColor blue "Configuring node"
     CONFIG_PATH="$HOME/0g-storage-node/run/config.toml"
     rm -f "$CONFIG_PATH"
-    curl -o "$CONFIG_PATH" https://snapshots.unitynodes.app/0gchain-testnet/config-v3.toml
+
+    if ! curl -sSL -o "$CONFIG_PATH" https://snapshots.unitynodes.app/0gchain-testnet/config-v3.toml; then
+        echo -e "\033[31m✖ Не вдалося завантажити config.toml\033[0m"
+        exit 1
+    fi
 
     echo -e "\033[1;33m[6/9] Введіть ваш приватний ключ:\033[0m"
     read -p "🔑 Private Key: " PRIVATE_KEY
+
+    if [[ -z "$PRIVATE_KEY" ]]; then
+        echo -e "\033[31m✖ Приватний ключ не введено. Завершення.\033[0m"
+        exit 1
+    fi
+
     sed -i "s|miner_key = \"YOUR-PRIVATE-KEY\"|miner_key = \"$PRIVATE_KEY\"|" "$CONFIG_PATH"
     echo -e "\033[32m✔ Private key added.\033[0m\n"
 
@@ -60,6 +70,7 @@ function install() {
     echo -e "\033[1;33m[7/9] Перевірка конфігурації...\033[0m"
     grep -E "^(miner_key|rpc_listen_address|blockchain_rpc_endpoint)" "$CONFIG_PATH" || true
     echo ""
+
 
     # Створення systemd-сервісу
     echo -e "\033[1;33m[8/9] Створення systemd-сервісу...\033[0m"
