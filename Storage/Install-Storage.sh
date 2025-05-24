@@ -50,7 +50,7 @@ function install() {
     CONFIG_PATH="$HOME/0g-storage-node/run/config.toml"
     rm -f "$CONFIG_PATH"
 
-    if ! curl -sSL -o "$CONFIG_PATH" https://snapshots.unitynodes.app/0gchain-testnet/config-v3.toml; then
+    if ! curl -L -o "$CONFIG_PATH" https://raw.githubusercontent.com/CPITMschool/Scripts/refs/heads/main/config-v3.toml; then
         echo -e "\033[31m✖ Не вдалося завантажити config.toml\033[0m"
         exit 1
     fi
