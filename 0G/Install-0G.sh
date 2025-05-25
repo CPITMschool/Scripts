@@ -31,7 +31,8 @@ function install() {
   go version
 
   printGreen "Setting environment variables..."
-  echo "export MONIKER=\"YourMoniker\"" >> $HOME/.bash_profile
+  read -p "Enter your moniker name: " MONIKER
+  echo "export MONIKER=\"$MONIKER\"" >> $HOME/.bash_profile
   echo "export OG_PORT=\"55\"" >> $HOME/.bash_profile
   echo 'export PATH=$PATH:$HOME/galileo/bin' >> $HOME/.bash_profile
   source $HOME/.bash_profile
@@ -81,6 +82,7 @@ function install() {
 
   CONFIG="$HOME/.0gchaind/galileo/0g-home/0gchaind-home/config"
 
+  sed -i -e "s/^moniker *=.*/moniker = \"$MONIKER\"/" $CONFIG/config.toml
   sed -i "s/laddr = \"tcp:\/\/0.0.0.0:26656\"/laddr = \"tcp:\/\/0.0.0.0:${OG_PORT}656\"/" $CONFIG/config.toml
   sed -i "s/laddr = \"tcp:\/\/127.0.0.1:26657\"/laddr = \"tcp:\/\/127.0.0.1:${OG_PORT}657\"/" $CONFIG/config.toml
   sed -i "s/^proxy_app = .*/proxy_app = \"tcp:\/\/127.0.0.1:${OG_PORT}658\"/" $CONFIG/config.toml
