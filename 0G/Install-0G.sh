@@ -55,6 +55,10 @@ function install() {
   geth init --datadir $HOME/.0gchaind/galileo/0g-home/geth-home $HOME/.0gchaind/galileo/genesis.json
   0gchaind init $MONIKER --home $HOME/.0gchaind/tmp
 
+  mkdir -p $HOME/.0gchaind/galileo/0g-home/0gchaind-home/data
+  mkdir -p $HOME/.0gchaind/galileo/0g-home/0gchaind-home/config
+  mkdir -p $HOME/.0gchaind/galileo/0g-home/geth-home
+
   cp $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/galileo/0g-home/0gchaind-home/data/
   cp $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/galileo/0g-home/0gchaind-home/config/
   cp $HOME/.0gchaind/tmp/config/priv_validator_key.json $HOME/.0gchaind/galileo/0g-home/0gchaind-home/config/
@@ -72,8 +76,8 @@ function install() {
   mv ~/.0gchaind/0g-home/0gchaind-home/data ~/.0gchaind/0g-home/0gchaind-home/data.bak.$(date +%s) || true
   mv ~/.0gchaind/0g-home/geth-home/geth ~/.0gchaind/0g-home/geth-home/geth.bak.$(date +%s) || true
 
-  rm -rf ~/.0gchaind/0g-home/0gchaind-home/data
-  rm -rf ~/.0gchaind/0g-home/geth-home/geth
+  mkdir -p ~/.0gchaind/0g-home/0gchaind-home
+  mkdir -p ~/.0gchaind/0g-home/geth-home
 
   tar -xzvf 0gchaind_snapshot_20250520-223437.tar.gz -C ~/.0gchaind/0g-home/
   tar -xzvf geth_snapshot_20250520-223437.tar.gz -C ~/.0gchaind/0g-home/
@@ -98,6 +102,7 @@ function install() {
   sed -i "s/AuthPort = .*/AuthPort = ${OG_PORT}551/" $HOME/.0gchaind/galileo/geth-config.toml
   sed -i "s/ListenAddr = .*/ListenAddr = \":${OG_PORT}303\"/" $HOME/.0gchaind/galileo/geth-config.toml
 
+  # systemd service definitions (unchanged)
   sudo tee /etc/systemd/system/0gchaind.service > /dev/null <<EOF
 [Unit]
 Description=0gchaind Node Service
