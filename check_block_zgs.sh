@@ -19,7 +19,7 @@ function print_progress_bar() {
 
 # Function to print visual information
 function print_info {
-  echo -e "\n\e[1;33m==== Стан ноди ====\e[0m"
+  echo -e "\n\e[1;33m==== Стан ноди 0G Storage ====\e[0m"
   echo -e "🔷 Висота ноди:    \e[1;34m$1\e[0m"
   echo -e "🌐 Висота мережі:  \e[1;36m$2\e[0m"
   echo -e "⏳ Блоків залишилось: \e[1;31m$3\e[0m"
@@ -100,8 +100,8 @@ while true; do
     # Display information
     print_info "$logSyncHeight" "$latestBlock" "$diff"
     echo -e "🤝 Connected Peers: \033[1;34m$connectedPeers\033[0m | Speed: \033[1;34m$bps blk/s\033[0m | ETA: \033[1;34m$eta_disp\033[0m"
-    echo -e "\e[1;33m===================\e[0m"
-
+    echo -e "\e[1;33m==============================\e[0m"
+                     
 
     sleep 5
 done
