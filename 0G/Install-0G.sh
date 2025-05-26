@@ -10,7 +10,7 @@ function printGreen {
 
   clear
   source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
-  
+
 function install() {
   # Введення змінних
   read -p "Enter your MONIKER (default: test): " MONIKER
@@ -149,9 +149,6 @@ EOF
   sudo systemctl enable 0gchaind 0ggeth
   sudo systemctl restart 0gchaind 0ggeth
 
-  printGreen "Waiting for logs..."
-  sudo journalctl -u 0gchaind -u 0ggeth -f --no-hostname -o cat
-
   printGreen "Downloading and applying snapshots..."
 
   # install dependencies, and disable statesync to avoid sync issues
@@ -176,6 +173,9 @@ EOF
   # restart node and check logs
   sudo systemctl restart 0gchaind 0ggeth
   sudo journalctl -u 0gchaind -u 0ggeth -f
+
+    printGreen "Waiting for logs..."
+  sudo journalctl -u 0gchaind -u 0ggeth -f --no-hostname -o cat
 }
 
 install
