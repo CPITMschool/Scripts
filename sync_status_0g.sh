@@ -35,13 +35,13 @@ while true; do
   progress=$(( progress > 100 ? 100 : progress ))
 
   # Вивід інформації з кольорами
-  echo -e "\n\e[1;33m==== Стан ноди ====\e[0m"
+  echo -e "\n\e[1;33m==== Стан ноди 0G RPC ====\e[0m"
   echo -e "🔷 Висота ноди:    \e[1;34m$local_height\e[0m"
   echo -e "🌐 Висота мережі:  \e[1;36m$network_height\e[0m"
   echo -e "⏳ Блоків залишилось: \e[1;31m$blocks_left\e[0m"
   echo -n "📊 Прогрес синхронізації: "
   print_progress_bar "$local_height" "$network_height"
-  echo -e "\n=========================================\n"
+  echo -e "\n\e[1;33m==========================\e[0m"
 
   sleep 5
 done
