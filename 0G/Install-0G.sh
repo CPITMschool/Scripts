@@ -55,7 +55,7 @@ function install() {
   cp -r $HOME/galileo-used/0g-home $HOME/.0gchaind
 
   geth init --datadir $HOME/.0gchaind/0g-home/geth-home $HOME/galileo-used/genesis.json
-  0gchaind init $MONIKER --home $HOME/.0gchaind/tmp
+  0gchaind init $MONIKER --home $HOME/.0gchaind/tmp --chain-id 0gchain-16601
 
   mv $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/0g-home/0gchaind-home/data/
   mv $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
