@@ -8,11 +8,10 @@ function printGreen {
   echo -e "\e[1m\e[32m${1}\e[0m"
 }
 
-  clear
-  source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
+clear
+source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
 function install() {
-  # Введення змінних
   read -p "Enter your MONIKER (default: test): " MONIKER
   MONIKER=${MONIKER:-test}
 
@@ -45,6 +44,8 @@ function install() {
   rm -rf $HOME/galileo.tar.gz
   chmod +x $HOME/galileo/bin/geth
   chmod +x $HOME/galileo/bin/0gchaind
+  sudo fuser -k $HOME/go/bin/geth 2>/dev/null
+  sudo fuser -k $HOME/go/bin/0gchaind 2>/dev/null
   cp $HOME/galileo/bin/geth $HOME/go/bin/geth
   cp $HOME/galileo/bin/0gchaind $HOME/go/bin/0gchaind
   mv $HOME/galileo $HOME/galileo-used
@@ -54,7 +55,8 @@ function install() {
   cp -r $HOME/galileo-used/0g-home $HOME/.0gchaind
 
   geth init --datadir $HOME/.0gchaind/0g-home/geth-home $HOME/galileo-used/genesis.json
-  0gchaind init $MONIKER --home $HOME/.0gchaind/tmp
+  0gchaind init $MONIKER --home $HOME/.0gchaind/tmp --chain-id devnet
+
   mv $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/0g-home/0gchaind-home/data/
   mv $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
   mv $HOME/.0gchaind/tmp/config/priv_validator_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
@@ -70,11 +72,7 @@ function install() {
   sed -i "s/^# *Port = .*/# Port = ${OG_PORT}901/" $HOME/galileo-used/geth-config.toml
   sed -i "s/^# *InfluxDBEndpoint = .*/# InfluxDBEndpoint = \"http:\/\/localhost:${OG_PORT}086\"/" $HOME/galileo-used/geth-config.toml
 
-  sed -i.bak -e "s%:26658%:${OG_PORT}658%g;
-  s%:26657%:${OG_PORT}657%g;
-  s%:6060%:${OG_PORT}060%g;
-  s%:26656%:${OG_PORT}656%g;
-  s%:26660%:${OG_PORT}660%g" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
+  sed -i.bak -e "s%:26658%:${OG_PORT}658%g; s%:26657%:${OG_PORT}657%g; s%:6060%:${OG_PORT}060%g; s%:26656%:${OG_PORT}656%g; s%:26660%:${OG_PORT}660%g" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
 
   sed -i "s/address = \".*:3500\"/address = \"127.0.0.1:${OG_PORT}500\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
   sed -i "s/^rpc-dial-url *=.*/rpc-dial-url = \"http:\/\/localhost:${OG_PORT}551\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
@@ -84,6 +82,7 @@ function install() {
   sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
   sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"19\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
 
+  mkdir -p $HOME/.0gchaind/config
   ln -sf $HOME/.0gchaind/0g-home/0gchaind-home/config/client.toml $HOME/.0gchaind/config/client.toml
 
   printGreen "Creating systemd services..."
