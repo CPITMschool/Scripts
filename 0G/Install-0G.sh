@@ -55,11 +55,28 @@ function install() {
   cp -r $HOME/galileo-used/0g-home $HOME/.0gchaind
 
   geth init --datadir $HOME/.0gchaind/0g-home/geth-home $HOME/galileo-used/genesis.json
-  0gchaind init $MONIKER --home $HOME/.0gchaind/tmp --chain-id 0gchain-16601
 
-  mv $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/0g-home/0gchaind-home/data/
-  mv $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
-  mv $HOME/.0gchaind/tmp/config/priv_validator_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
+  # Get valid chain-id from genesis
+  CHAIN_ID=$(jq -r .chain_id $HOME/galileo-used/genesis.json)
+  if [[ ! $CHAIN_ID =~ ^[a-zA-Z][a-zA-Z0-9\-_]*$ ]]; then
+    printGreen "Invalid chain_id format in genesis.json: '$CHAIN_ID'. Skipping --chain-id flag."
+    0gchaind init $MONIKER --home $HOME/.0gchaind/tmp
+  else
+    0gchaind init $MONIKER --home $HOME/.0gchaind/tmp --chain-id $CHAIN_ID
+  fi
+
+  if [ -f "$HOME/.0gchaind/tmp/data/priv_validator_state.json" ]; then
+    mv $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/0g-home/0gchaind-home/data/
+  fi
+
+  if [ -f "$HOME/.0gchaind/tmp/config/node_key.json" ]; then
+    mv $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
+  fi
+
+  if [ -f "$HOME/.0gchaind/tmp/config/priv_validator_key.json" ]; then
+    mv $HOME/.0gchaind/tmp/config/priv_validator_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
+  fi
+
   rm -rf $HOME/.0gchaind/tmp
 
   sed -i -e "s/^moniker *=.*/moniker = \"$MONIKER\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
@@ -68,7 +85,7 @@ function install() {
   sed -i "s/HTTPPort = .*/HTTPPort = ${OG_PORT}545/" $HOME/galileo-used/geth-config.toml
   sed -i "s/WSPort = .*/WSPort = ${OG_PORT}546/" $HOME/galileo-used/geth-config.toml
   sed -i "s/AuthPort = .*/AuthPort = ${OG_PORT}551/" $HOME/galileo-used/geth-config.toml
-  sed -i "s/ListenAddr = .*/ListenAddr = \":${OG_PORT}303\"/" $HOME/galileo-used/geth-config.toml
+  sed -i "s/ListenAddr = .*/ListenAddr = \"${OG_PORT}303\"/" $HOME/galileo-used/geth-config.toml
   sed -i "s/^# *Port = .*/# Port = ${OG_PORT}901/" $HOME/galileo-used/geth-config.toml
   sed -i "s/^# *InfluxDBEndpoint = .*/# InfluxDBEndpoint = \"http:\/\/localhost:${OG_PORT}086\"/" $HOME/galileo-used/geth-config.toml
 
@@ -84,7 +101,6 @@ function install() {
 
   mkdir -p $HOME/.0gchaind/config
   ln -sf $HOME/.0gchaind/0g-home/0gchaind-home/config/client.toml $HOME/.0gchaind/config/client.toml
-
   printGreen "Creating systemd services..."
 
   sudo tee /etc/systemd/system/0ggeth.service > /dev/null <<EOF
