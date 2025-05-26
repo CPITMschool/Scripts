@@ -25,9 +25,9 @@ function print_info {
   echo -e "⏳ Блоків залишилось: \e[1;31m$3\e[0m"
   echo -n "📊 Прогрес синхронізації: "
   print_progress_bar "$1" "$2"
-
-  # Display RPC URL
-  echo -e "🔗 Використовуваний RPC: \033[1;34m$RPC_URL\033[0m"
+  
+  # Move RPC URL to a new line
+  echo -e "\n🔗 Використовуваний RPC: \033[1;34m$RPC_URL\033[0m"
 }
 
 # === RPC Detection ===
@@ -101,6 +101,9 @@ while true; do
     print_info "$logSyncHeight" "$latestBlock" "$diff"
     echo -e "🤝 Connected Peers: \033[1;34m$connectedPeers\033[0m"
     echo -e "$extra"
+
+    # Display separator after the speed and ETA line
+    echo -e "\n\e[1;33m===================\e[0m"
 
     sleep 5
 done
