@@ -25,8 +25,6 @@ function print_info {
   echo -e "⏳ Блоків залишилось: \e[1;31m$3\e[0m"
   echo -n "📊 Прогрес синхронізації: "
   print_progress_bar "$1" "$2"
-  echo -e "\n\e[1;33m===================\e[0m"
-  echo -e "\n"
 
   # Display RPC URL
   echo -e "🔗 Використовуваний RPC: \033[1;34m$RPC_URL\033[0m"
@@ -95,7 +93,8 @@ while true; do
         fi
         lag="(${color}Behind $diff\033[0m)"
     else
-        lag=""
+        lag="No data"
+        extra=""
     fi
 
     # Display information
