@@ -99,9 +99,7 @@ while true; do
 
     # Display information
     print_info "$logSyncHeight" "$latestBlock" "$diff"
-    echo -e "🤝 Connected Peers: \033[1;34m$connectedPeers\033[0m"
-    echo -e "$extra"
-
+    echo -e "🤝 Connected Peers: \033[1;34m$connectedPeers\033[0m | Speed: \033[1;34m$bps blk/s\033[0m | ETA: \033[1;34m$eta_disp\033[0m"
     # Display separator after the speed and ETA line
     echo -e "\n\e[1;33m===================\e[0m"
 
