@@ -3,9 +3,34 @@
 # Basic functions from URL
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/utils.sh)
 
-clear
-logo
+# Function to print progress bar
+function print_progress_bar() {
+  local progress=$1
+  local total=$2
+  local width=40
+  local filled=$(( progress * width / total ))
+  local empty=$(( width - filled ))
 
+  printf "["
+  printf "%0.s█" $(seq 1 $filled)
+  printf "%0.s " $(seq 1 $empty)
+  printf "] %d%%" $(( progress * 100 / total ))
+}
+
+# Function to print visual information
+function print_info {
+  echo -e "\n\e[1;33m==== Стан ноди ====\e[0m"
+  echo -e "🔷 Висота ноди:    \e[1;34m$1\e[0m"
+  echo -e "🌐 Висота мережі:  \e[1;36m$2\e[0m"
+  echo -e "⏳ Блоків залишилось: \e[1;31m$3\e[0m"
+  echo -n "📊 Прогрес синхронізації: "
+  print_progress_bar "$1" "$2"
+  echo -e "\n\e[1;33m===================\e[0m"
+  echo -e "\n"
+
+  # Display RPC URL
+  echo -e "🔗 Використовуваний RPC: \033[1;34m$RPC_URL\033[0m"
+}
 
 # === RPC Detection ===
 SYSTEMD_SERVICE="/etc/systemd/system/zgs.service"
@@ -24,15 +49,7 @@ RPC_URL=$(grep 'blockchain_rpc_endpoint' "$CONFIG_TOML" | cut -d '"' -f2)
     echo -e "❌ RPC not found in systemd or config. Using default: \033[1;34m$RPC_URL\033[0m"
 }
 
-echo -e "🔗 RPC: \033[1;34m$RPC_URL\033[0m"
-
-# === Node Version ===
-cd "$HOME/0g-storage-node" || exit
-VERSION=$(git describe --tags --abbrev=0 2>/dev/null)
-[[ -n "$VERSION" ]] && echo -e "🧩 Storage Node Version: \033[1;32m$VERSION\033[0m" || echo -e "🧩 Storage Node Version: \033[31mUnknown\033[0m"
-echo
-
-# === Monitoring Loop ===
+# Monitoring Loop
 prev_block=0
 prev_time=0
 
@@ -81,6 +98,10 @@ while true; do
         lag=""
     fi
 
-    echo -e "📦 Local Block: \033[32m$logSyncHeight\033[0m / 🌐 Network Block: \033[33m$latestBlock\033[0m $lag | 🤝 Peers: \033[34m$connectedPeers\033[0m $extra"
+    # Display information
+    print_info "$logSyncHeight" "$latestBlock" "$diff"
+    echo -e "🤝 Connected Peers: \033[1;34m$connectedPeers\033[0m"
+    echo -e "$extra"
+
     sleep 5
 done
