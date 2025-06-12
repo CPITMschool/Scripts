@@ -39,7 +39,7 @@ function install() {
   printGreen "Downloading binaries..."
   cd $HOME
   rm -rf galileo
-  wget -O galileo.tar.gz https://github.com/0glabs/0gchain-NG/releases/download/v1.1.1/galileo-v1.1.1.tar.gz
+  wget -O galileo.tar.gz https://github.com/0glabs/0gchain-NG/releases/download/v1.2.0/galileo-v1.2.0.tar.gz
   tar -xzvf galileo.tar.gz -C $HOME
   rm -rf $HOME/galileo.tar.gz
   chmod +x $HOME/galileo/bin/geth
