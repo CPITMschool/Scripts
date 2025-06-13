@@ -38,72 +38,66 @@ function install() {
 
   printGreen "Downloading binaries..."
   cd $HOME
-  rm -rf galileo
-  wget -O galileo.tar.gz https://github.com/0glabs/0gchain-NG/releases/download/v1.2.0/galileo-v1.2.0.tar.gz
-  tar -xzvf galileo.tar.gz -C $HOME
-  rm -rf $HOME/galileo.tar.gz
-  chmod +x $HOME/galileo/bin/geth
-  chmod +x $HOME/galileo/bin/0gchaind
-  sudo fuser -k $HOME/go/bin/geth 2>/dev/null
-  sudo fuser -k $HOME/go/bin/0gchaind 2>/dev/null
-  cp $HOME/galileo/bin/geth $HOME/go/bin/geth
-  cp $HOME/galileo/bin/0gchaind $HOME/go/bin/0gchaind
-  mv $HOME/galileo $HOME/galileo-used
+rm -rf galileo
+wget -O galileo.tar.gz https://github.com/0glabs/0gchain-NG/releases/download/v1.2.0/galileo-v1.2.0.tar.gz
+tar -xzvf galileo.tar.gz -C $HOME
+rm -rf $HOME/galileo.tar.gz
+mv galileo-v1.2.0 galileo
+chmod +x $HOME/galileo/bin/geth
+chmod +x $HOME/galileo/bin/0gchaind
+cp $HOME/galileo/bin/geth $HOME/go/bin/geth
+cp $HOME/galileo/bin/0gchaind $HOME/go/bin/0gchaind
+mv $HOME/galileo $HOME/galileo-used
 
-  printGreen "Initializing node..."
-  mkdir -p $HOME/.0gchaind
-  cp -r $HOME/galileo-used/0g-home $HOME/.0gchaind
+#Create and copy directory
+mkdir -p $HOME/.0gchaind
+cp -r $HOME/galileo-used/0g-home $HOME/.0gchaind
 
-  geth init --datadir $HOME/.0gchaind/0g-home/geth-home $HOME/galileo-used/genesis.json
+# initialize Geth
+geth init --datadir $HOME/.0gchaind/0g-home/geth-home $HOME/galileo-used/genesis.json
 
-  # Get valid chain-id from genesis
-  CHAIN_ID=$(jq -r .chain_id $HOME/galileo-used/genesis.json)
-  if [[ ! $CHAIN_ID =~ ^[a-zA-Z][a-zA-Z0-9\-_]*$ ]]; then
-    printGreen "Invalid chain_id format in genesis.json: '$CHAIN_ID'. Skipping --chain-id flag."
-    0gchaind init $MONIKER --home $HOME/.0gchaind/tmp
-  else
-    0gchaind init $MONIKER --home $HOME/.0gchaind/tmp --chain-id $CHAIN_ID
-  fi
+# Initialize 0gchaind
+0gchaind init $MONIKER --home $HOME/.0gchaind/tmp
+mv $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/0g-home/0gchaind-home/data/
+mv $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
+mv $HOME/.0gchaind/tmp/config/priv_validator_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
+rm -rf $HOME/.0gchaind/tmp
 
-  if [ -f "$HOME/.0gchaind/tmp/data/priv_validator_state.json" ]; then
-    mv $HOME/.0gchaind/tmp/data/priv_validator_state.json $HOME/.0gchaind/0g-home/0gchaind-home/data/
-  fi
+# Set moniker in config.toml file
+sed -i -e "s/^moniker *=.*/moniker = \"$MONIKER\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
 
-  if [ -f "$HOME/.0gchaind/tmp/config/node_key.json" ]; then
-    mv $HOME/.0gchaind/tmp/config/node_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
-  fi
+# set custom ports in geth-config.toml file
+sed -i "s/HTTPPort = .*/HTTPPort = ${OG_PORT}545/" $HOME/galileo-used/geth-config.toml
+sed -i "s/WSPort = .*/WSPort = ${OG_PORT}546/" $HOME/galileo-used/geth-config.toml
+sed -i "s/AuthPort = .*/AuthPort = ${OG_PORT}551/" $HOME/galileo-used/geth-config.toml
+sed -i "s/ListenAddr = .*/ListenAddr = \":${OG_PORT}303\"/" $HOME/galileo-used/geth-config.toml
+sed -i "s/^# *Port = .*/# Port = ${OG_PORT}901/" $HOME/galileo-used/geth-config.toml
+sed -i "s/^# *InfluxDBEndpoint = .*/# InfluxDBEndpoint = \"http:\/\/localhost:${OG_PORT}086\"/" $HOME/galileo-used/geth-config.toml
 
-  if [ -f "$HOME/.0gchaind/tmp/config/priv_validator_key.json" ]; then
-    mv $HOME/.0gchaind/tmp/config/priv_validator_key.json $HOME/.0gchaind/0g-home/0gchaind-home/config/
-  fi
+# set custom ports in config.toml file
+sed -i.bak -e "s%:26658%:${OG_PORT}658%g;
+s%:26657%:${OG_PORT}657%g;
+s%:6060%:${OG_PORT}060%g;
+s%:26656%:${OG_PORT}656%g;
+s%:26660%:${OG_PORT}660%g" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
 
-  rm -rf $HOME/.0gchaind/tmp
+# set custom ports in app.toml file
+sed -i "s/address = \".*:3500\"/address = \"127\.0\.0\.1:${OG_PORT}500\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
+sed -i "s/^rpc-dial-url *=.*/rpc-dial-url = \"http:\/\/localhost:${OG_PORT}551\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
 
-  sed -i -e "s/^moniker *=.*/moniker = \"$MONIKER\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
+# disable indexer
+sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
 
-  printGreen "Configuring ports..."
-  sed -i "s/HTTPPort = .*/HTTPPort = ${OG_PORT}545/" $HOME/galileo-used/geth-config.toml
-  sed -i "s/WSPort = .*/WSPort = ${OG_PORT}546/" $HOME/galileo-used/geth-config.toml
-  sed -i "s/AuthPort = .*/AuthPort = ${OG_PORT}551/" $HOME/galileo-used/geth-config.toml
-  sed -i "s/ListenAddr = .*/ListenAddr = \"${OG_PORT}303\"/" $HOME/galileo-used/geth-config.toml
-  sed -i "s/^# *Port = .*/# Port = ${OG_PORT}901/" $HOME/galileo-used/geth-config.toml
-  sed -i "s/^# *InfluxDBEndpoint = .*/# InfluxDBEndpoint = \"http:\/\/localhost:${OG_PORT}086\"/" $HOME/galileo-used/geth-config.toml
+# configure pruning
+sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"19\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
 
-  sed -i.bak -e "s%:26658%:${OG_PORT}658%g; s%:26657%:${OG_PORT}657%g; s%:6060%:${OG_PORT}060%g; s%:26656%:${OG_PORT}656%g; s%:26660%:${OG_PORT}660%g" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
+# Create simlink
+ln -sf $HOME/.0gchaind/0g-home/0gchaind-home/config/client.toml $HOME/.0gchaind/config/client.toml
 
-  sed -i "s/address = \".*:3500\"/address = \"127.0.0.1:${OG_PORT}500\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
-  sed -i "s/^rpc-dial-url *=.*/rpc-dial-url = \"http:\/\/localhost:${OG_PORT}551\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
-
-  sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
-  sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
-  sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
-  sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"19\"/" $HOME/.0gchaind/0g-home/0gchaind-home/config/app.toml
-
-  mkdir -p $HOME/.0gchaind/config
-  ln -sf $HOME/.0gchaind/0g-home/0gchaind-home/config/client.toml $HOME/.0gchaind/config/client.toml
-  printGreen "Creating systemd services..."
-
-  sudo tee /etc/systemd/system/0ggeth.service > /dev/null <<EOF
+# Create 0ggeth systemd file
+sudo tee /etc/systemd/system/0ggeth.service > /dev/null <<EOF
 [Unit]
 Description=0g Geth Node Service
 After=network-online.target
@@ -128,7 +122,13 @@ LimitNOFILE=65535
 WantedBy=multi-user.target
 EOF
 
-  sudo tee /etc/systemd/system/0gchaind.service > /dev/null <<EOF
+# enable and start 0ggeth
+sudo systemctl daemon-reload
+sudo systemctl enable 0ggeth
+sudo systemctl restart 0ggeth
+
+# Create 0gchaind systemd file 
+sudo tee /etc/systemd/system/0gchaind.service > /dev/null <<EOF
 [Unit]
 Description=0gchaind Node Service
 After=network-online.target
@@ -138,19 +138,19 @@ User=$USER
 WorkingDirectory=$HOME/galileo-used
 ExecStart=$(which 0gchaind) start \
 --rpc.laddr tcp://0.0.0.0:${OG_PORT}657 \
---chain-spec devnet \
---kzg.trusted-setup-path $HOME/galileo-used/kzg-trusted-setup.json \
---engine.jwt-secret-path $HOME/galileo-used/jwt-secret.hex \
---kzg.implementation=crate-crypto/go-kzg-4844 \
---block-store-service.enabled \
---node-api.enabled \
---node-api.logging \
---node-api.address 0.0.0.0:${OG_PORT}500 \
+--chaincfg.chain-spec devnet \
+--chaincfg.kzg.trusted-setup-path $HOME/galileo-used/kzg-trusted-setup.json \
+--chaincfg.engine.jwt-secret-path $HOME/galileo-used/jwt-secret.hex \
+--chaincfg.kzg.implementation=crate-crypto/go-kzg-4844 \
+--chaincfg.block-store-service.enabled \
+--chaincfg.node-api.enabled \
+--chaincfg.node-api.logging \
+--chaincfg.node-api.address 0.0.0.0:${OG_PORT}500 \
+--chaincfg.engine.rpc-dial-url http://localhost:${OG_PORT}551 \
 --pruning=nothing \
 --p2p.seeds 85a9b9a1b7fa0969704db2bc37f7c100855a75d9@8.218.88.60:26656 \
 --p2p.external_address $(wget -qO- eth0.me):${OG_PORT}656 \
---home $HOME/.0gchaind/0g-home/0gchaind-home \
---chain-spec devnet
+--home $HOME/.0gchaind/0g-home/0gchaind-home
 Restart=always
 RestartSec=3
 LimitNOFILE=65535
@@ -159,12 +159,13 @@ LimitNOFILE=65535
 WantedBy=multi-user.target
 EOF
 
-  printGreen "Enabling and starting services..."
-  sudo systemctl daemon-reload
-  sudo systemctl enable 0gchaind 0ggeth
-  sudo systemctl restart 0gchaind 0ggeth
+# enable and start 0gchaind
+sudo systemctl daemon-reload
+sudo systemctl enable 0gchaind 0ggeth
+sudo systemctl restart 0gchaind 0ggeth
+sleep 10
 
-  printGreen "Downloading and applying snapshots..."
+printGreen "Downloading and applying snapshots..."
 
 # install dependencies, and disable statesync to avoid sync issues
 sudo apt install curl tmux jq lz4 unzip -y
@@ -176,20 +177,20 @@ cp $HOME/.0gchaind/0g-home/0gchaind-home/data/priv_validator_state.json $HOME/pr
 
 # remove old data and unpack 0G snapshot
 rm -rf $HOME/.0gchaind/0g-home/0gchaind-home/data
-curl https://server-3.itrocket.net/testnet/og/og_2025-06-05_1519703_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchaind/0g-home/0gchaind-home
+curl https://server-3.itrocket.net/testnet/og/og_2025-06-13_2019296_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchaind/0g-home/0gchaind-home
 
 # restore priv_validator_state.json
 mv $HOME/priv_validator_state.json.backup $HOME/.0gchaind/0g-home/0gchaind-home/data/priv_validator_state.json
 
 # delete geth data and unpack Geth snapshot
 rm -rf $HOME/.0gchaind/0g-home/geth-home/geth/chaindata
-curl https://server-3.itrocket.net/testnet/og/geth_og_2025-06-05_1519703_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchaind/0g-home/geth-home/geth
+curl https://server-3.itrocket.net/testnet/og/geth_og_2025-06-13_2019296_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchaind/0g-home/geth-home/geth
 
 
 # restart node and check logs
 sudo systemctl restart 0gchaind 0ggeth
 
-    printGreen "Waiting for logs..."
+printGreen "Waiting for logs..."
   sudo journalctl -u 0gchaind -u 0ggeth -f --no-hostname -o cat
 }
 
