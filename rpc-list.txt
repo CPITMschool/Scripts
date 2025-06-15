@@ -1,9 +1,4 @@
 https://evmrpc-testnet.0g.ai
-https://0g-testnet-rpc.astrostake.xyz
-https://0g.bangcode.id
-https://lightnode-json-rpc-0g.grandvalleys.com
-https://0g-evm.zstake.xyz/
-https://0g-galileo-evmrpc.corenodehq.xyz/
 https://0g.json-rpc.cryptomolot.com/
 https://0g-evm.maouam.nodelab.my.id/
 https://0g-evmrpc-galileo.coinsspor.com/
@@ -11,12 +6,13 @@ https://0g-evmrpc-galileo.komado.xyz/
 https://0g.galileo.zskw.xyz/
 https://0g-galileo.shachopra.com/
 https://0g-galileo-evmrpc2.corenodehq.xyz/
-https://0g-galileo-evm-rpc.validator247.com/
 https://evmrpc.vinnodes.com/
-https://0g-galileo-ferdimanaa.xyz/
-https://0g-galileo.xzid.xyz/
 https://0g-evm-rpc.zeycanode.com/
 https://rpc-galileo.ajpanda.com/
 https://evm-rpc-0g.obiwank107.xyz/
 https://0g-evmrpc.sr20de.xyz/
 https://evm-rpc-shayneval.xyz/
+https://og-testnet-evm.itrocket.net:443
+https://0g.mhclabs.com/
+https://0g-galileo-evmrpc.corenodehq.xyz/
+https://0g-galileo.xzid.xyz/
