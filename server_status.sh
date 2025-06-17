@@ -86,6 +86,7 @@ fi
 
 # Виведення інформації
 echo ""
+echo ""
 echo -e "${GREEN}На вашому сервері доступно:${NC}"
 echo ""
 echo -e "${GREEN}Ubuntu: ${RED}$ubuntu_version${NC}"
