@@ -1,0 +1,30 @@
+[
+  {
+    "Name": "0G",
+    "CPU": "4 CPU",
+    "RAM": "8 GB RAM",
+    "DISK": "500 GB+ Storage",
+    "OS": "Ubuntu 22.04 LTS"
+  },
+  {
+    "Name": "Aztec",
+    "CPU": "8 CPU",
+    "RAM": "16 GB RAM",
+    "DISK": "400 GB Storage",
+    "OS": "Ubuntu 22.04 LTS"
+  },
+  {
+    "Name": "Storage",
+    "CPU": "8 CPU",
+    "RAM": "16 GB RAM",
+    "DISK": "1TB NVMe Storage",
+    "OS": "Ubuntu 22.04 LTS"
+  },
+  {
+    "Name": "Warden",
+    "CPU": "4 CPU",
+    "RAM": "8 GB RAM",
+    "DISK": "100 GB Storage",
+    "OS": "Ubuntu 22.04 LTS"
+  }
+]
