@@ -171,22 +171,6 @@ printGreen "Downloading and applying snapshots..."
 sudo apt install curl tmux jq lz4 unzip -y
 sed -i.bak -E "s|^(enable[[:space:]]+=[[:space:]]+).*$|\1false|" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
 
-# stop node and backup priv_validator_state.json
-sudo systemctl stop 0gchaind 0ggeth
-cp $HOME/.0gchaind/0g-home/0gchaind-home/data/priv_validator_state.json $HOME/priv_validator_state.json.backup
-
-# remove old data and unpack 0G snapshot
-rm -rf $HOME/.0gchaind/0g-home/0gchaind-home/data
-curl https://server-3.itrocket.net/testnet/og/og_2025-06-26_2816666_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchaind/0g-home/0gchaind-home
-
-# restore priv_validator_state.json
-mv $HOME/priv_validator_state.json.backup $HOME/.0gchaind/0g-home/0gchaind-home/data/priv_validator_state.json
-
-# delete geth data and unpack Geth snapshot
-rm -rf $HOME/.0gchaind/0g-home/geth-home/geth/chaindata
-curl https://server-3.itrocket.net/testnet/og/geth_og_2025-06-26_2816666_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.0gchaind/0g-home/geth-home/geth
-
-
 # restart node and check logs
 sudo systemctl restart 0gchaind 0ggeth
 
