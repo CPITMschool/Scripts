@@ -11,6 +11,7 @@ function install() {
 
     sudo apt update && sudo apt upgrade -y
     sudo apt install curl git wget htop tmux build-essential jq make gcc tar clang pkg-config libssl-dev ncdu cmake -y
+    sudo apt install protobuf-compiler -y
 
     # Встановлення Go
     printColor blue "Встановлення Go"
