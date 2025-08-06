@@ -73,8 +73,35 @@ function install() {
         exit 1
     fi
 
-    # Оновлення конфігурації за допомогою змінних
-    sed -i 's|^\s*#\?\s*network_dir\s*=.*|network_dir = "network"|s|^\s*#\?\s*network_listen_address\s*=.*|network_listen_address = "0.0.0.0"|s|^\s*#\?\s*network_enr_address\s*=.*|network_enr_address = "'"$ENR_ADDRESS"'"|s|^\s*#\?\s*network_enr_tcp_port\s*=.*|network_enr_tcp_port = 1234|s|^\s*#\?\s*network_enr_udp_port\s*=.*|network_enr_udp_port = 1234|s|^\s*#\?\s*network_libp2p_port\s*=.*|network_libp2p_port = 1234|s|^\s*#\?\s*network_discovery_port\s*=.*|network_discovery_port = 1234|s|^\s*#\?\s*network_target_peers\s*=.*|network_target_peers = 100|s|^\s*#\s*rpc_listen_address\s*=.*|rpc_listen_address = "0.0.0.0:5678"|s|^\s*#\?\s*db_dir\s*=.*|db_dir = "db"|s|^\s*#\?\s*log_config_file\s*=.*|log_config_file = "log_config"|s|^\s*#\?\s*log_directory\s*=.*|log_directory = "log"|s|^\s*#\?\s*network_boot_nodes\s*=.*|network_boot_nodes = \["/ip4/47.251.117.133/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9wiQTNu4pDCgps","/ip4/47.76.61.226/udp/1234/p2p/16Uiu2HAm2k6ua2mGgvZ8rTMV8GhpW71aVzkQWy7D37TTDuLCpgmX"]|s|^\s*#\?\s*network_private\s*=.*|network_private = false|s|^\s*#\?\s*network_disable_discovery\s*=.*|network_disable_discovery = false|s|^\s*#\?\s*discv5_request_timeout_secs\s*=.*|discv5_request_timeout_secs = 10|s|^\s*#\?\s*discv5_query_peer_timeout_secs\s*=.*|discv5_query_peer_timeout_secs = 5|s|^\s*#\?\s*discv5_request_retries\s*=.*|discv5_request_retries = 3|s|^\s*#\?\s*log_contract_address\s*=.*|log_contract_address = "'"$LOG_CONTRACT_ADDRESS"'"|s|^\s*#\?\s*listen_address\s*=.*|rpc_listen_address = "0.0.0.0:5678"|s|^\s*#\?\s*mine_contract_address\s*=.*|mine_contract_address = "'"$MINE_CONTRACT"'"|s|^\s*#\?\s*reward_contract_address\s*=.*|reward_contract_address = "'"$REWARD_CONTRACT"'"|s|^\s*#\?\s*log_sync_start_block_number\s*=.*|log_sync_start_block_number = '"$ZGS_LOG_SYNC_BLOCK"'|s|^\s*#\?\s*blockchain_rpc_endpoint\s*=.*|blockchain_rpc_endpoint = "'"$BLOCKCHAIN_RPC_ENDPOINT"'"|s|^# \[sync\]|\[sync\]|s|^# auto_sync_enabled = false|auto_sync_enabled = true|s|^# find_peer_timeout = .*|find_peer_timeout = "30s"|' "$CONFIG_PATH"
+    # Оновлення конфігурації за допомогою простих команд sed
+    printColor blue "Оновлення конфігураційного файлу..."
+    sed -i "s@^\s*#\?\s*network_dir.*@network_dir = \"network\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_listen_address.*@network_listen_address = \"0.0.0.0\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_enr_address.*@network_enr_address = \"$ENR_ADDRESS\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_enr_tcp_port.*@network_enr_tcp_port = 1234@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_enr_udp_port.*@network_enr_udp_port = 1234@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_libp2p_port.*@network_libp2p_port = 1234@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_discovery_port.*@network_discovery_port = 1234@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_target_peers.*@network_target_peers = 100@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*rpc_listen_address.*@rpc_listen_address = \"0.0.0.0:5678\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*db_dir.*@db_dir = \"db\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*log_config_file.*@log_config_file = \"log_config\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*log_directory.*@log_directory = \"log\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_boot_nodes.*@network_boot_nodes = \[\"/ip4/47.251.117.133/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9wiQTNu4pDCgps\",\"/ip4/47.76.61.226/udp/1234/p2p/16Uiu2HAm2k6ua2mGgvZ8rTMV8GhpW71aVzkQWy7D37TTDuLCpgmX\"]@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_private.*@network_private = false@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*network_disable_discovery.*@network_disable_discovery = false@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*discv5_request_timeout_secs.*@discv5_request_timeout_secs = 10@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*discv5_query_peer_timeout_secs.*@discv5_query_peer_timeout_secs = 5@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*discv5_request_retries.*@discv5_request_retries = 3@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*log_contract_address.*@log_contract_address = \"$LOG_CONTRACT_ADDRESS\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*listen_address.*@rpc_listen_address = \"0.0.0.0:5678\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*mine_contract_address.*@mine_contract_address = \"$MINE_CONTRACT\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*reward_contract_address.*@reward_contract_address = \"$REWARD_CONTRACT\"@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*log_sync_start_block_number.*@log_sync_start_block_number = $ZGS_LOG_SYNC_BLOCK@g" "$CONFIG_PATH"
+    sed -i "s@^\s*#\?\s*blockchain_rpc_endpoint.*@blockchain_rpc_endpoint = \"$BLOCKCHAIN_RPC_ENDPOINT\"@g" "$CONFIG_PATH"
+    sed -i "s@^# \[sync\]@\[sync\]@g" "$CONFIG_PATH"
+    sed -i "s@^# auto_sync_enabled = false@auto_sync_enabled = true@g" "$CONFIG_PATH"
+    sed -i "s@^# find_peer_timeout = .*@find_peer_timeout = \"30s\"@g" "$CONFIG_PATH"
     
     echo -e "\033[1;33m[6/9] Введіть ваш приватний ключ:\033[0m"
     read -p "🔑 Private Key: " PRIVATE_KEY
