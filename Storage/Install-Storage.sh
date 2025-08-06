@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 set -e
 
@@ -125,4 +124,3 @@ EOF
 }
 
 install
-```
