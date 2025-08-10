@@ -11,7 +11,7 @@ function printGreen {
 clear
 source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
 
-function install() {
+function update() {
   # Введення моникера
   read -p "Введіть moniker (ім'я ноди, наприклад Asapov): " MONIKER
   MONIKER=${MONIKER:-test}
@@ -169,4 +169,4 @@ EOF
   sudo journalctl -u 0gchaind -f --no-hostname -o cat
 }
 
-install
+update
