@@ -143,7 +143,7 @@ After=network-online.target
 [Service]
 User=$USER
 WorkingDirectory=$HOME/galileo-used
-ExecStart=\$(which 0gchaind) start \\
+ExecStart=$HOME/go/bin/0gchaind start \\
   --chaincfg.chain-spec devnet \\
   --chaincfg.kzg.trusted-setup-path=\$HOME/galileo-used/kzg-trusted-setup.json \\
   --chaincfg.engine.jwt-secret-path=\$HOME/galileo-used/jwt-secret.hex \\
