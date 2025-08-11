@@ -25,7 +25,7 @@ function install() {
     [ ! -d "$HOME/go/bin" ] && mkdir -p "$HOME/go/bin"
     echo 'export PATH=$PATH:/usr/local/go/bin:~/go/bin' >> ~/.bashrc
     source $HOME/.bashrc
-    
+
     go version
 
     # Встановлення Rust
@@ -147,7 +147,7 @@ EOF
     printLine
     printColor blue "Перегляд логів:            >>> tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)"
     printColor blue "Версія ноди:               >>> $HOME/0g-storage-node/target/release/zgs_node --version"
-    printColor blue "Перегляд miner key:        >>> grep '^miner_key' $CONFIG_PATH | sed 's/miner_key = \"\\(.*\\)\"/\\1/'"
+    printColor blue "Перегляд miner key:        >>> grep '^miner_key' $CONFIG_PATH | sed 's/miner_key = \"\(.*\)\"/\1/'"
     printLine
 }
 
