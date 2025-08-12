@@ -1,263 +1,263 @@
-# Команди для CPITMschool/Scripts
-# Цей файл потрібно додати до вашого GitHub репозиторію як commands.yml
+# Commands for CPITMschool/Scripts
+# This file should be added to your GitHub repository as commands.yml
 
 - id: system
-  name: Система
-  description: Системні команди та моніторинг
+  name: System
+  description: System commands and monitoring
   icon: fas fa-cogs
   commands:
     - id: system_info
-      name: Інформація про систему
-      description: Показати детальну інформацію про систему
+      name: System Information
+      description: Show detailed system information
       command: uname -a && echo "---" && free -h && echo "---" && df -h && echo "---" && lscpu | head -20
       category: system
       icon: fas fa-info-circle
     
     - id: memory_usage
-      name: Використання пам'яті
-      description: Детальна інформація про використання пам'яті
+      name: Memory Usage
+      description: Detailed memory usage information
       command: free -h && echo "---" && cat /proc/meminfo | head -15
       category: system
       icon: fas fa-memory
     
     - id: disk_usage
-      name: Використання диску
-      description: Показати використання дискового простору
+      name: Disk Usage
+      description: Show disk space usage
       command: df -h && echo "---" && du -sh /* 2>/dev/null | sort -hr | head -10
       category: system
       icon: fas fa-hdd
     
     - id: top_processes
-      name: Топ процесів
-      description: Показати найбільш ресурсоємні процеси
+      name: Top Processes
+      description: Show most resource-intensive processes
       command: ps aux --sort=-%cpu | head -20
       category: system
       icon: fas fa-list
 
 - id: network
-  name: Мережа
-  description: Мережеві команди та діагностика
+  name: Network
+  description: Network commands and diagnostics
   icon: fas fa-network-wired
   commands:
     - id: network_info
-      name: Мережеві інтерфейси
-      description: Показати інформацію про мережеві інтерфейси
+      name: Network Interfaces
+      description: Show network interface information
       command: ip addr show && echo "---" && ip route show
       category: network
       icon: fas fa-ethernet
     
     - id: ping_test
-      name: Тест підключення
-      description: Перевірити підключення до основних DNS серверів
+      name: Connectivity Test
+      description: Test connectivity to main DNS servers
       command: ping -c 4 8.8.8.8 && echo "---" && ping -c 4 1.1.1.1
       category: network
       icon: fas fa-satellite-dish
     
     - id: port_scan
-      name: Відкриті порти
-      description: Показати відкриті порти та активні з'єднання
+      name: Open Ports
+      description: Show open ports and active connections
       command: netstat -tuln && echo "---" && ss -tuln
       category: network
       icon: fas fa-door-open
     
     - id: network_speed
-      name: Швидкість мережі
-      description: Тест швидкості мережевого з'єднання
+      name: Network Speed
+      description: Test network connection speed
       command: curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python3 - --simple
       category: network
       icon: fas fa-tachometer-alt
 
 - id: docker
   name: Docker
-  description: Управління Docker контейнерами
+  description: Docker container management
   icon: fab fa-docker
   commands:
     - id: docker_status
-      name: Статус Docker
-      description: Показати статус Docker сервісу та основну інформацію
+      name: Docker Status
+      description: Show Docker service status and basic information
       command: systemctl status docker --no-pager && echo "---" && docker version
       category: docker
       icon: fas fa-info
     
     - id: docker_containers
-      name: Список контейнерів
-      description: Показати всі Docker контейнери
+      name: Container List
+      description: Show all Docker containers
       command: docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}"
       category: docker
       icon: fas fa-boxes
     
     - id: docker_images
-      name: Docker образи
-      description: Показати всі Docker образи з розмірами
+      name: Docker Images
+      description: Show all Docker images with sizes
       command: docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}\t{{.CreatedAt}}"
       category: docker
       icon: fas fa-compact-disc
     
     - id: docker_stats
-      name: Статистика контейнерів
-      description: Показати використання ресурсів контейнерами
+      name: Container Stats
+      description: Show container resource usage
       command: docker stats --no-stream --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"
       category: docker
       icon: fas fa-chart-bar
     
     - id: docker_cleanup
-      name: Очистка Docker
-      description: Видалити невикористовувані Docker ресурси
+      name: Docker Cleanup
+      description: Remove unused Docker resources
       command: docker system prune -f && docker volume prune -f
       category: docker
       icon: fas fa-broom
       requiresConfirmation: true
 
 - id: blockchain
-  name: Блокчейн ноди
-  description: Управління блокчейн нодами
+  name: Blockchain Nodes
+  description: Blockchain node management
   icon: fas fa-cubes
   commands:
     - id: node_status
-      name: Статус нод
-      description: Перевірити статус всіх запущених нод
+      name: Node Status
+      description: Check status of all running nodes
       command: systemctl status node-* --no-pager -l | head -50
       category: blockchain
       icon: fas fa-heartbeat
     
     - id: node_logs
-      name: Логи нод
-      description: Показати останні логи нод
+      name: Node Logs
+      description: Show recent node logs
       command: journalctl -u node-* -n 50 --no-pager
       category: blockchain
       icon: fas fa-file-alt
     
     - id: cosmos_status
-      name: Статус Cosmos ноди
-      description: Перевірити статус Cosmos SDK ноди
+      name: Cosmos Node Status
+      description: Check Cosmos SDK node status
       command: curl -s localhost:26657/status | jq '.result | {node_info: .node_info.moniker, sync_info: .sync_info}'
       category: blockchain
       icon: fas fa-atom
     
     - id: validator_info
-      name: Інформація про валідатора
-      description: Показати інформацію про валідатора
+      name: Validator Info
+      description: Show validator information
       command: curl -s localhost:26657/status | jq '.result.validator_info'
       category: blockchain
       icon: fas fa-shield-alt
     
     - id: peer_count
-      name: Кількість пірів
-      description: Показати кількість підключених пірів
+      name: Peer Count
+      description: Show number of connected peers
       command: curl -s localhost:26657/net_info | jq '.result.n_peers' && echo "Peers:" && curl -s localhost:26657/net_info | jq '.result.peers[].node_info.moniker'
       category: blockchain
       icon: fas fa-users
     
     - id: latest_block
-      name: Останній блок
-      description: Показати інформацію про останній блок
+      name: Latest Block
+      description: Show latest block information
       command: curl -s localhost:26657/status | jq '.result.sync_info | {latest_block_height, latest_block_time, catching_up}'
       category: blockchain
       icon: fas fa-cube
 
 - id: monitoring
-  name: Моніторинг
-  description: Команди для моніторингу системи
+  name: Monitoring
+  description: System monitoring commands
   icon: fas fa-chart-line
   commands:
     - id: cpu_usage
-      name: Використання CPU
-      description: Показати використання процесора
+      name: CPU Usage
+      description: Show CPU usage
       command: top -b -n1 | grep "Cpu(s)" && echo "---" && ps aux --sort=-%cpu | head -10
       category: monitoring
       icon: fas fa-microchip
     
     - id: load_average
-      name: Навантаження системи
-      description: Показати середнє навантаження системи
+      name: System Load
+      description: Show system load average
       command: uptime && echo "---" && w && echo "---" && cat /proc/loadavg
       category: monitoring
       icon: fas fa-weight-hanging
     
     - id: io_stats
-      name: Статистика I/O
-      description: Показати статистику вводу/виводу
+      name: I/O Statistics
+      description: Show input/output statistics
       command: iostat -x 1 1 2>/dev/null || (echo "iostat not available, using alternative:" && cat /proc/diskstats | head -10)
       category: monitoring
       icon: fas fa-exchange-alt
     
     - id: system_logs
-      name: Системні логи
-      description: Показати останні системні логи
+      name: System Logs
+      description: Show recent system logs
       command: journalctl -n 30 --no-pager | tail -20
       category: monitoring
       icon: fas fa-scroll
     
     - id: failed_services
-      name: Невдалі сервіси
-      description: Показати сервіси, які не запустилися
+      name: Failed Services
+      description: Show services that failed to start
       command: systemctl --failed --no-pager
       category: monitoring
       icon: fas fa-exclamation-triangle
 
 - id: security
-  name: Безпека
-  description: Команди для перевірки безпеки
+  name: Security
+  description: Security check commands
   icon: fas fa-shield-alt
   commands:
     - id: login_attempts
-      name: Спроби входу
-      description: Показати останні спроби входу в систему
+      name: Login Attempts
+      description: Show recent login attempts
       command: last -n 20 && echo "---" && lastb -n 10
       category: security
       icon: fas fa-sign-in-alt
     
     - id: ssh_connections
-      name: SSH з'єднання
-      description: Показати активні SSH з'єднання
+      name: SSH Connections
+      description: Show active SSH connections
       command: who && echo "---" && ss -tn state established '( dport = :22 or sport = :22 )'
       category: security
       icon: fas fa-terminal
     
     - id: firewall_status
-      name: Статус файрволу
-      description: Показати статус та правила файрволу
+      name: Firewall Status
+      description: Show firewall status and rules
       command: ufw status verbose 2>/dev/null || (systemctl status firewalld --no-pager 2>/dev/null || echo "No firewall detected")
       category: security
       icon: fas fa-fire
     
     - id: open_ports
-      name: Відкриті порти
-      description: Показати всі відкриті порти та сервіси
+      name: Open Ports
+      description: Show all open ports and services
       command: nmap -sT -O localhost 2>/dev/null || netstat -tuln
       category: security
       icon: fas fa-door-open
 
 - id: maintenance
-  name: Обслуговування
-  description: Команди для обслуговування системи
+  name: Maintenance
+  description: System maintenance commands
   icon: fas fa-tools
   commands:
     - id: update_system
-      name: Оновлення системи
-      description: Перевірити та встановити оновлення системи
+      name: System Updates
+      description: Check and install system updates
       command: apt list --upgradable 2>/dev/null || yum check-update 2>/dev/null || echo "Package manager not detected"
       category: maintenance
       icon: fas fa-download
     
     - id: clean_logs
-      name: Очистка логів
-      description: Очистити старі логи для звільнення місця
+      name: Clean Logs
+      description: Clean old logs to free up space
       command: journalctl --disk-usage && echo "Cleaning..." && journalctl --vacuum-time=7d
       category: maintenance
       icon: fas fa-broom
       requiresConfirmation: true
     
     - id: backup_configs
-      name: Резервне копіювання конфігурацій
-      description: Створити резервну копію важливих конфігураційних файлів
+      name: Backup Configurations
+      description: Create backup of important configuration files
       command: tar -czf /tmp/configs-backup-$(date +%Y%m%d).tar.gz /etc/systemd/system/ /etc/nginx/ /etc/ssh/ 2>/dev/null && ls -la /tmp/configs-backup-*.tar.gz
       category: maintenance
       icon: fas fa-archive
     
     - id: check_certificates
-      name: Перевірка сертифікатів
-      description: Перевірити термін дії SSL сертифікатів
+      name: Check Certificates
+      description: Check SSL certificate expiration dates
       command: find /etc/letsencrypt/live/ -name "cert.pem" -exec openssl x509 -in {} -text -noout \; 2>/dev/null | grep -A2 "Not After" || echo "No certificates found"
       category: maintenance
       icon: fas fa-certificate
