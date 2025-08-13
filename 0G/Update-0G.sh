@@ -1,51 +1,42 @@
-# Встановлення всіх необхідних залежностей
-echo "📦 Встановлення залежностей..."
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y curl wget git build-essential jq lz4 unzip
-
-
-
 sudo systemctl stop 0gchaind 0ggeth
 sudo systemctl disable 0gchaind 0ggeth
 rm -rf $HOME/.0gchaind
 sudo rm /etc/systemd/system/0gchaind.service /etc/systemd/system/0ggeth.service
 sudo systemctl daemon-reload
 
+# Запит moniker від користувача
+read -p "Введіть ваш moniker (ім'я валідатора): " MONIKER
+if [ -z "$MONIKER" ]; then
+    echo "Moniker не може бути порожнім. Використовується значення за замовчуванням: MyValidator"
+    MONIKER="MyValidator"
+fi
+echo "Використовується moniker: $MONIKER"
 
 # install go, if needed
-echo "🔧 Встановлення Go..."
 cd $HOME
 VER="1.21.3"
-if ! command -v go &> /dev/null; then
-    wget "https://golang.org/dl/go$VER.linux-amd64.tar.gz"
-    sudo rm -rf /usr/local/go
-    sudo tar -C /usr/local -xzf "go$VER.linux-amd64.tar.gz"
-    rm "go$VER.linux-amd64.tar.gz"
-    [ ! -f ~/.bash_profile ] && touch ~/.bash_profile
-    echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin" >> ~/.bash_profile
-    source $HOME/.bash_profile
-    [ ! -d ~/go/bin ] && mkdir -p ~/go/bin
-else
-    echo "✅ Go вже встановлено"
-fi
+wget "https://golang.org/dl/go$VER.linux-amd64.tar.gz"
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf "go$VER.linux-amd64.tar.gz"
+rm "go$VER.linux-amd64.tar.gz"
+[ ! -f ~/.bash_profile ] && touch ~/.bash_profile
+echo "export PATH=$PATH:/usr/local/go/bin:~/go/bin" >> ~/.bash_profile
+source $HOME/.bash_profile
+[ ! -d ~/go/bin ] && mkdir -p ~/go/bin
 
 # set vars
-echo "🔧 Налаштування змінних..."
-echo "export MONIKER=\"test\"" >> $HOME/.bash_profile
-echo "export OG_PORT=\"47\"" >> $HOME/.bash_profile
+echo "export MONIKER=\"$MONIKER\"" >> $HOME/.bash_profile
+echo "export OG_PORT="47"" >> $HOME/.bash_profile
+echo 'export PATH=$PATH:$HOME/galileo-used/bin' >> $HOME/.bash_profile
 source $HOME/.bash_profile
 
 # set binaries
-echo "📥 Завантаження бінарних файлів..."
 cd $HOME
-rm -rf galileo galileo-v1.2.1
-wget -O galileo.zip https://github.com/0glabs/0gchain-NG/releases/download/v1.2.1/galileo-v1.2.1.zip
-unzip galileo.zip -d $HOME
-rm -rf $HOME/galileo.zip
-mv galileo-v1.2.1 galileo
-
-# Встановлення дозволів та копіювання бінарних файлів
-echo "🔧 Налаштування бінарних файлів..."
+rm -rf galileo
+wget -O galileo.tar.gz https://github.com/0glabs/0gchain-NG/releases/download/v2.0.2/galileo-v2.0.2.tar.gz
+tar -xzvf galileo.tar.gz -C $HOME
+rm -rf $HOME/galileo.tar.gz
+mv galileo-v2.0.2 galileo
 chmod +x $HOME/galileo/bin/geth
 chmod +x $HOME/galileo/bin/0gchaind
 cp $HOME/galileo/bin/geth $HOME/go/bin/geth
@@ -78,7 +69,7 @@ sed -i "s/^# *Port = .*/# Port = ${OG_PORT}901/" $HOME/galileo-used/geth-config.
 sed -i "s/^# *InfluxDBEndpoint = .*/# InfluxDBEndpoint = \"http:\/\/localhost:${OG_PORT}086\"/" $HOME/galileo-used/geth-config.toml
 
 # set seed and peers in config.toml file
-PEERS="3a11d0b48d7c477d133f959efb33d47d81aeae6d@og-testnet-peer.itrocket.net:47656,c0b6fa4e209f6f5cfa278e7556c50de1d2ea78fa@62.84.190.65:26656,84f8ea49499cb4f2c375abf0d656f91bca59b1df@62.169.31.141:30656,70ae4843c9ae0c097aa115180c0adac5780d697d@65.108.42.173:55656,3cd2acfc90410b278b0bddebced9203bc7cbd589@34.80.45.68:26656,9a3fcdd548681252bd91d713d2ceb34204ae173e@157.173.125.138:26656,3aee61365274f57d52c8eca6dae05977165d0dd5@165.154.224.88:26656,7f928bac574749e7d17fffab3ae1f3b0bfd8d9f6@135.181.215.60:47656,c841434e3c2e0b26dc905a0eb996ea763cafc68c@65.21.227.241:26656,446613e7d45940f5d690ae106cb1389f75098375@167.235.7.95:26656,3b754d08e9898ff99afbd6814f5de6f9346ed24b@95.111.252.28:30656"
+PEERS=3a11d0b48d7c477d133f959efb33d47d81aeae6d@og-testnet-peer.itrocket.net:47656
 SEEDS=cfa49d6db0c9065e974bfdbc9e0f55712ee2b0b9@og-testnet-seed.itrocket.net:47656
 sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
 sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*seeds *=.*/seeds = \"$SEEDS\"/}" $HOME/.0gchaind/0g-home/0gchaind-home/config/config.toml
@@ -159,7 +150,10 @@ ExecStart=$(which 0gchaind) start \
 --pruning=nothing \
 --p2p.seeds 85a9b9a1b7fa0969704db2bc37f7c100855a75d9@8.218.88.60:26656 \
 --p2p.external_address $(wget -qO- eth0.me):${OG_PORT}656 \
---home $HOME/.0gchaind/0g-home/0gchaind-home
+--home $HOME/.0gchaind/0g-home/0gchaind-home \
+--chaincfg.restaking.enabled \
+--chaincfg.restaking.symbiotic-rpc-dial-url https://ethereum-holesky-rpc.publicnode.com \
+--chaincfg.restaking.symbiotic-get-logs-block-range 1
 Restart=always
 RestartSec=3
 LimitNOFILE=65535
@@ -172,4 +166,4 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable 0gchaind
 sudo systemctl restart 0gchaind
-sudo journalctl -u 0gchaind -u 0ggeth -f --no-hostname -o cat   
+sudo journalctl -u 0gchaind -u 0ggeth -f --no-hostname -o cat
