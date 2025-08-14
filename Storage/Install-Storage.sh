@@ -21,11 +21,15 @@ function install() {
     sudo rm -rf /usr/local/go
     sudo tar -C /usr/local -xzf "go$VER.linux-amd64.tar.gz"
     rm "go$VER.linux-amd64.tar.gz"
-
+    
     [ ! -d "$HOME/go/bin" ] && mkdir -p "$HOME/go/bin"
     echo 'export PATH=$PATH:/usr/local/go/bin:~/go/bin' >> ~/.bashrc
+    
+    # Додайте цей рядок, щоб оновити PATH для поточного скрипта
+    export PATH=$PATH:/usr/local/go/bin:~/go/bin
+    
     source $HOME/.bashrc
-
+    
     go version
 
     # Встановлення Rust
