@@ -1,13 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-# Безпечніша локаль та IFS
 export LC_ALL=C
 IFS=$' \t\n'
 
 install() {
-  # ===== Утиліти для форматованого виводу =====
-  # якщо utils.sh недоступний, визначимо мінімальні заглушки
+  # ===== Мінімальні утиліти виводу (fallback, якщо utils.sh недоступний) =====
   if ! curl -fsSL https://raw.githubusercontent.com/CPITMschool/Scripts/main/utils.sh >/tmp/utils.sh 2>/dev/null; then
     printColor() { echo -e "$2"; }
     logo() { echo "=== 0G Storage Installer ==="; }
@@ -25,7 +23,7 @@ install() {
   sudo apt install -y curl git wget htop tmux build-essential jq make gcc tar clang \
     pkg-config libssl-dev ncdu cmake protobuf-compiler
 
-  # ===== Встановлення Go =====
+  # ===== Go =====
   printColor blue "Встановлення Go"
   cd "$HOME"
   VER="1.21.3"
@@ -33,23 +31,21 @@ install() {
   sudo rm -rf /usr/local/go
   sudo tar -C /usr/local -xzf "go${VER}.linux-amd64.tar.gz"
   rm -f "go${VER}.linux-amd64.tar.gz"
-  # додамо PATH, якщо його ще немає
   grep -q '/usr/local/go/bin' ~/.bash_profile 2>/dev/null || echo 'export PATH=$PATH:/usr/local/go/bin:~/go/bin' >> ~/.bash_profile
-  # застосуємо PATH в поточній сесії
   export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
   mkdir -p "$HOME/go/bin"
 
-  # ===== Встановлення Rust =====
+  # ===== Rust =====
   printColor blue "Встановлення Rust"
   curl --proto '=https' --tlsv1.2 -fsSL https://sh.rustup.rs | sh -s -- -y
   # shellcheck disable=SC1090
   source "$HOME/.cargo/env"
 
-  # ===== Клонування та збірка =====
+  # ===== 0G Storage =====
   printColor blue "Встановлення 0G Storage"
   cd "$HOME"
   if [[ -d "0g-storage-node" ]]; then
-    echo "❗ Каталог 0g-storage-node вже існує. Видаліть або перейменуйте його для перевстановлення."
+    echo "❗ Каталог 0g-storage-node вже існує. Видаліть/перейменуйте для перевстановлення."
     exit 1
   fi
 
@@ -59,10 +55,9 @@ install() {
   git submodule update --init
   cargo build --release
 
-  # ===== Збір даних користувача =====
+  # ===== Налаштування =====
   printColor blue "Налаштування ноди"
 
-  # RPC вводимо завжди з /dev/tty (навіть якщо stdin перенаправлений)
   if ! read -r -p "Введіть будь-який RPC з https://www.astrostake.xyz/0g-status: " BLOCKCHAIN_RPC_ENDPOINT < /dev/tty; then
     echo -e "\033[31m✖ Не вдалося прочитати RPC з /dev/tty. Запустіть у інтерактивному терміналі.\033[0m"
     exit 1
@@ -75,12 +70,11 @@ install() {
 
   ENR_ADDRESS="$(wget -qO- eth0.me || true)"
   if [[ -z "${ENR_ADDRESS}" ]]; then
-    echo -e "\033[33m⚠ Не вдалося визначити ENR адресу автоматично. Вкажіть вручну у конфігу пізніше.\033[0m"
+    echo -e "\033[33m⚠ Не вдалося визначити ENR адресу автоматично. Можете прописати вручну у конфігу.\033[0m"
   fi
 
-  # Миттєві змінні для sed, а також збережемо в ~/.bashrc на майбутнє
   LOG_CONTRACT_ADDRESS="0xbD75117F80b4E22698D0Cd7612d92BDb8eaff628"
-  MINE_CONTRACT="0x3A0d1d67497Ad770d6f72e7f4B8F0BAbaa2A649C"
+  MINE_CONTRACT="0x3A0d1d67497Ad770d6f72e7ф4B8F0BAbaa2A649C"
   REWARD_CONTRACT="0xd3D4D91125D76112AE256327410Dd0414Ee08Cb4"
   ZGS_LOG_SYNC_BLOCK="326165"
 
@@ -94,8 +88,10 @@ install() {
   } >> "$HOME/.bashrc"
 
   # ===== Конфіг =====
-  CONFIG_PATH="$HOME/0g-storage-node/run/config-testnet-turbo.toml"
-  mkdir -p "$HOME/0g-storage-node/run"
+  CONFIG_DIR="$HOME/0g-storage-node/run"
+  CONFIG_PATH="$CONFIG_DIR/config-testnet-turbo.toml"
+  mkdir -p "$CONFIG_DIR"
+
   if ! wget -q -O "$CONFIG_PATH" "https://server-5.itrocket.net/testnet/og/storage/config-testnet-turbo.toml"; then
     echo -e "\033[31m✖ Не вдалося завантажити config-testnet-turbo.toml\033[0m"
     exit 1
@@ -121,7 +117,6 @@ install() {
   sed -i "s@^\s*#\?\s*discv5_query_peer_timeout_secs.*@discv5_query_peer_timeout_secs = 5@g" "$CONFIG_PATH"
   sed -i "s@^\s*#\?\s*discv5_request_retries.*@discv5_request_retries = 3@g"            "$CONFIG_PATH"
   sed -i "s@^\s*#\?\s*log_contract_address.*@log_contract_address = \"$LOG_CONTRACT_ADDRESS\"@g" "$CONFIG_PATH"
-  # ВАЖЛИВО: приберено некоректну заміну listen_address → rpc_listen_address
   sed -i "s@^\s*#\?\s*mine_contract_address.*@mine_contract_address = \"$MINE_CONTRACT\"@g" "$CONFIG_PATH"
   sed -i "s@^\s*#\?\s*reward_contract_address.*@reward_contract_address = \"$REWARD_CONTRACT\"@g" "$CONFIG_PATH"
   sed -i "s@^\s*#\?\s*log_sync_start_block_number.*@log_sync_start_block_number = $ZGS_LOG_SYNC_BLOCK@g" "$CONFIG_PATH"
@@ -130,8 +125,8 @@ install() {
   sed -i "s@^# auto_sync_enabled = false@auto_sync_enabled = true@g"                     "$CONFIG_PATH"
   sed -i "s@^# find_peer_timeout = .*@find_peer_timeout = \"30s\"@g"                     "$CONFIG_PATH"
 
-  # ===== Приватний ключ (читання з /dev/tty, приховано) =====
-  echo -e "\033[1;33m[6/9] Введіть ваш приватний ключ:\033[0m"
+  # ===== Приватний ключ =====
+  echo -e "\033[1;33m[6/9] Введіть ваш приватний ключ (приховано):\033[0m"
   if ! read -r -s -p "🔑 Private Key: " PRIVATE_KEY < /dev/tty; then
     echo -e "\n\033[31m✖ Не вдалось прочитати з /dev/tty. Запустіть скрипт у інтерактивній консолі.\033[0m"
     exit 1
@@ -142,8 +137,11 @@ install() {
     echo -e "\033[31m✖ Приватний ключ не введено. Завершення.\033[0m"
     exit 1
   fi
+  # (необов’язково) Базова валідація формату: 64 hex без 0x
+  if ! [[ "$TRIMMED_KEY" =~ ^[A-Fa-f0-9]{64}$ ]]; then
+    echo -e "\033[33m⚠ Ключ нетипового формату (очікується 64 hex без 0x). Продовжую запис як є.\033[0m"
+  fi
 
-  # Запис у конфіг (створить рядок, якщо його немає)
   if grep -q '^miner_key' "$CONFIG_PATH"; then
     sed -i "/^miner_key/c\miner_key = \"$PRIVATE_KEY\"" "$CONFIG_PATH"
   else
@@ -156,7 +154,7 @@ install() {
   grep -E "^(miner_key|rpc_listen_address|blockchain_rpc_endpoint)" "$CONFIG_PATH" || true
   echo ""
 
-  # ===== systemd сервіс =====
+  # ===== systemd =====
   echo -e "\033[1;33m[8/9] Створення systemd-сервісу…\033[0m"
   sudo tee /etc/systemd/system/zgs.service >/dev/null <<EOF
 [Unit]
@@ -182,9 +180,9 @@ EOF
   printColor blue "Встановлення 0G Storage node завершено"
   echo ""
   printLine
-  printColor blue "Логи:                     >>> tail -f ~/0g-storage-node/run/log/zgs.log.\$(TZ=UTC date +%Y-%m-%d)"
-  printColor blue "Версія ноди:              >>> \$HOME/0g-storage-node/target/release/zgs_node --version"
-  printColor blue "Перегляд miner key:       >>> grep '^miner_key' $CONFIG_PATH | sed 's/miner_key = \"\\(.*\\)\"/\\1/'"
+  printColor blue "Логи:               >>> tail -f ~/0g-storage-node/run/log/zgs.log.\$(TZ=UTC date +%Y-%m-%d)"
+  printColor blue "Версія ноди:        >>> \$HOME/0g-storage-node/target/release/zgs_node --version"
+  printColor blue "Перегляд miner key: >>> grep '^miner_key' $CONFIG_PATH | sed 's/miner_key = \"\\(.*\\)\"/\\1/'"
   printLine
 }
 
