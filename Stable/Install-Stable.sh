@@ -1,12 +1,13 @@
 #!/bin/bash
 
 function printDelimiter {
-  echo "==========================================="
+  echo "==========================================="
 }
 
 function printGreen {
-  echo -e "\e[1m\e[32m${1}\e[0m"
+  echo -e "\e[1m\e[32m${1}\e[0m"
 }
+
 
 source <(curl -s https://raw.githubusercontent.com/UnityNodes/scripts/main/dependencies.sh)
 
@@ -18,7 +19,8 @@ echo -e "\e[30;47m Введіть ім'я moniker(Наприклад: Oliver):\e
 echo -en ">>> "
 read -r NODE_MONIKER
 
-### Install Dependencies
+# Шлях до бінарного файлу
+STABLED_BIN="$HOME/go/bin/stabled"
 
 ### Building binaries
 echo ""
@@ -27,16 +29,23 @@ printColor blue "[4/6] Building binaries"
 cd $HOME
 rm -rf bin
 mkdir bin && cd bin
-wget https://stable-testnet-data.s3.us-east-1.amazonaws.com/stabled-latest-linux-amd64-testnet.tar.gz
-tar -xvzf stabled-0.8.1-testnet-linux-amd64.tar.gz
+
+DOWNLOAD_FILE="stabled-latest-linux-amd64-testnet.tar.gz"
+wget https://stable-testnet-data.s3.us-east-1.amazonaws.com/$DOWNLOAD_FILE
+tar -xvzf $DOWNLOAD_FILE
 chmod +x stabled
-mv $HOME/bin/stabled $HOME/go/bin
-stabled version
-
-
-wardend init "$NODE_MONIKER" --chain-id stabletestnet_2201-1
+mv $HOME/bin/stabled $STABLED_BIN
+$STABLED_BIN version
+$STABLED_BIN init "$NODE_MONIKER" --chain-id stabletestnet_2201-1
 
 ### Download genesis and addrbook
+
+# Перевірка наявності ~/.stabled/config, яку вже створила команда init
+if [ ! -d "$HOME/.stabled/config" ]; then
+    echo "Помилка: Не вдалося створити каталог конфігурації. Перевірте команду init."
+    return
+fi
+
 # Create backup of default genesis
 mv ~/.stabled/config/genesis.json ~/.stabled/config/genesis.json.backup
 
@@ -53,7 +62,8 @@ sha256sum ~/.stabled/config/genesis.json
 
 # Download optimized configuration
 wget https://stable-testnet-data.s3.us-east-1.amazonaws.com/rpc_node_config.zip
-unzip rpcnode_config.zip
+# --- ВИПРАВЛЕНО: Правильна назва файлу ---
+unzip rpc_node_config.zip
 
 # Backup original config
 cp ~/.stabled/config/config.toml ~/.stabled/config/config.toml.backup
@@ -62,13 +72,14 @@ cp ~/.stabled/config/config.toml ~/.stabled/config/config.toml.backup
 cp config.toml ~/.stabled/config/config.toml
 
 # Update moniker in config
-sed -i "s/^moniker = \".*\"/moniker = \"$MONIKER\"/" ~/.stabled/config/config.toml
+# --- ВИПРАВЛЕНО: Використання правильної змінної NODE_MONIKER ---
+sed -i "s/^moniker = \".*\"/moniker = \"$NODE_MONIKER\"/" ~/.stabled/config/config.toml
 
 # Set seeds and Peers
 SEEDS=""
 PEERS="5ed0f977a26ccf290e184e364fb04e268ef16430@37.187.147.27:26656,128accd3e8ee379bfdf54560c21345451c7048c7@37.187.147.22:26656"
 sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*seeds *=.*/seeds = \"$SEEDS\"/}" \
-       -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.stabled/config/config.toml
+       -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.stabled/config/config.toml
 
 FILE_APP=~/.stabled/config/app.toml
 FILE_CONFIG=~/.stabled/config/config.toml
@@ -83,7 +94,8 @@ echo "Редагування $FILE_CONFIG..."
 # P2P
 sed -i 's/^max_num_inbound_peers = .*/max_num_inbound_peers = 50/' $FILE_CONFIG
 sed -i 's/^max_num_outbound_peers = .*/max_num_outbound_peers = 30/' $FILE_CONFIG
-sed -i 's/persistent_peers = ""/persistent_peers = "5ed0f977a26ccf290e184e364fb04e268ef16430@37.187.147.27:26656,128accd3e8ee379bfdf54560c21345451c7048c7@37.187.147.22:26656"/' $FILE_CONFIG
+# Рядок, що дублює встановлення persistent_peers, видалено, оскільки він вже був встановлений вище:
+# sed -i 's/persistent_peers = ""/persistent_peers = "5ed0f977a26ccf290e184e364fb04e268ef16430@37.187.147.27:26656,128accd3e8ee379bfdf54560c21345451c7048c7@37.187.147.22:26656"/' $FILE_CONFIG
 sed -i 's/^pex = .*/pex = true/' $FILE_CONFIG
 
 # RPC
@@ -102,7 +114,8 @@ After=network-online.target
 
 [Service]
 User=$USER
-ExecStart=/usr/bin/stabled start --chain-id stabletestnet_2201-1
+# --- ВИПРАВЛЕНО: Використовуємо повний шлях до бінарника ---
+ExecStart=$STABLED_BIN start --chain-id stabletestnet_2201-1
 Restart=always
 RestartSec=3
 LimitNOFILE=65535
@@ -125,10 +138,12 @@ sudo systemctl start stabled.service
 
 ### Useful commands
 printDelimiter
-printGreen "Переглянути журнал логів:         sudo journalctl -u stabled -f -o cat"
-printGreen "Переглянути статус синхронізації: stabled status | jq | grep \"catching_up\""
+printGreen "Переглянути журнал логів:         sudo journalctl -u stabled -f -o cat"
+# --- ВИПРАВЛЕНО: Використовуємо повний шлях до бінарника ---
+printGreen "Переглянути статус синхронізації: $STABLED_BIN status | jq | grep \"catching_up\""
 source $HOME/.bash_profile
 printDelimiter
 }
+
 
 install
