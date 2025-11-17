@@ -1,0 +1,6 @@
+{ 
+"name": "Stable",
+"cpu": "8 CPU",
+"ram": "16 GB RAM",
+"disk": "1 TB NVMe" 
+}
