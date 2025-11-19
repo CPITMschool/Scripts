@@ -1,5 +1,8 @@
 #!/bin/bash
 
+clear
+source <(curl -s https://raw.githubusercontent.com/CPITMschool/Scripts/main/logo.sh)
+
 function printDelimiter {
   echo "==========================================="
 }
@@ -109,6 +112,11 @@ sed -i -e "s|^node *=.*|node = \"tcp://localhost:${STABLE_PORT}657\"|" $HOME/.st
   sed -i '/\[rpc\]/,/^\[/ s/^[[:space:]#]*max_open_connections[[:space:]]*=.*/max_open_connections = 900/' "$CONFIG_TOML"
   # cors_allowed_origins = ["*"]
   sed -i '/\[rpc\]/,/^\[/ s/^[[:space:]#]*cors_allowed_origins[[:space:]]*=.*/cors_allowed_origins = ["*"]/' "$CONFIG_TOML"
+
+  SEEDS="5ed0f977a26ccf290e184e364fb04e268ef16430@37.187.147.27:26656,128accd3e8ee379bfdf54560c21345451c7048c7@37.187.147.22:26656"
+  PEERS="5ed0f977a26ccf290e184e364fb04e268ef16430@37.187.147.27:26656,128accd3e8ee379bfdf54560c21345451c7048c7@37.187.147.22:26656,9d1150d557fbf491ec5933140a06cdff40451dee@164.68.97.210:26656,e33988e27710ee1a7072f757b61c3b28c922eb59@185.232.68.94:11656,ff4ff638cee05df63d4a1a2d3721a31a70d0debc@141.94.138.48:26664"
+sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*seeds *=.*/seeds = \"$SEEDS\"/}" \
+       -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.stabled/config/config.toml
 
 printGreen "7. Adding seeds, peers, configuring custom ports, pruning, minimum gas price..." && sleep 1
 
