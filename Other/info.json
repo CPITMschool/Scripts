@@ -1,0 +1,36 @@
+{
+  "name": "Other",
+  "description": "Utility scripts for system setup and configuration",
+  "scripts": [
+    {
+      "name": "docker-install",
+      "description": "Install Docker Engine and Docker Compose on Ubuntu/Debian systems",
+      "file": "Install-Docker.sh"
+    },
+    {
+      "name": "docker-uninstall",
+      "description": "Completely remove Docker Engine, Docker Compose, and all related data",
+      "file": "Uninstall-Docker.sh"
+    },
+    {
+      "name": "rust",
+      "description": "Install Rust programming language and Cargo package manager via rustup",
+      "file": "install_rust.sh"
+    },
+    {
+      "name": "ufw",
+      "description": "Install and configure UFW (Uncomplicated Firewall) with basic security rules",
+      "file": "install_ufw.sh"
+    },
+    {
+      "name": "grafana",
+      "description": "Install and configure Grafana monitoring dashboard",
+      "file": "grafana1.sh"
+    },
+    {
+      "name": "server-status",
+      "description": "Display comprehensive server status (CPU, RAM, disk, network, processes)",
+      "file": "server_status.sh"
+    }
+  ]
+}

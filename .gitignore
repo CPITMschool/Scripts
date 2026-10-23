@@ -1,0 +1,63 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+cpinodes
+cpinodes-*
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Source code (in separate private repo)
+cpinodes-source/
+
+# Build artifacts
+bin/
+
+# Dependency directories
+vendor/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Development files
+.kiro/
+testdata/
+pkg/
+
+# Old/backup files
+*.bak
+*.old
+original.json
+commands.txt
+commands.yml
+config-v3.toml
+prometheus.yml
+rpc-list.txt
+users.json
+TESTING*.md
+RUN-LOCAL.md

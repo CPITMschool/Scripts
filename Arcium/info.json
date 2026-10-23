@@ -1,6 +1,7 @@
 { 
-"name": "Arcium",
-"cpu": "N/A",
-"ram": "N/A",
-"disk": "N/A" 
+  "name": "Arcium",
+  "cpu": "4 CPU",
+  "ram": "8 GB RAM",
+  "disk": "500 GB+ Storage",
+  "os": "Ubuntu 22.04"
 }
